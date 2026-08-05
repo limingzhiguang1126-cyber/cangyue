@@ -1,0 +1,136 @@
+# ============================================================
+# 金融事件实时预警系统 主配置文件
+# 对应 PRD《金融事件实时预警系统》第八节 config.yaml
+# 所有 ${XXX} 占位符从 .env 中读取（见 .env.example）
+# ============================================================
+
+# 服务器配置
+server:
+  port: 8080
+  log_level: info
+
+# 数据源配置
+data_sources:
+  layer1:
+    truth_social:
+      enabled: true
+      rsshub_url: "http://localhost:1200/truthsocial/realDonaldTrump"
+      poll_interval: 30  # seconds
+    sec_edgar:
+      enabled: true
+      rss_url: "https://www.sec.gov/cgi-bin/browse?action=getcurrent&type=8-K&company=&dateb=&owner=include&count=40&output=rss"
+      poll_interval: 30
+    binance_announcement:
+      enabled: true
+      api_url: "https://www.binance.com/bapi/composite/v1/public/content/community/notice/list"
+      poll_interval: 30
+    ap_news:
+      enabled: true
+      rss_url: "http://feeds.apnews.com/apnews/topnews"
+      poll_interval: 30
+    reuters:
+      enabled: true
+      rss_url: "https://www.reutersagency.com/feed/?best-topics=top-news"
+      poll_interval: 30
+
+  layer2:
+    fed_speeches:
+      enabled: true
+      rss_url: "https://www.federalreserve.gov/feeds/speeches.xml"
+      poll_interval: 120
+    sec_enforcement:
+      enabled: true
+      rss_url: "https://www.sec.gov/rss/litigation/litreleases.xml"
+      poll_interval: 120
+    elon_musk:
+      enabled: true
+      rsshub_url: "http://localhost:1200/twitter/user/elonmusk"
+      poll_interval: 60
+    cnbc:
+      enabled: true
+      rss_url: "https://www.cnbc.com/id/100003114/device/rss/rss.html"
+      poll_interval: 120
+    coindesk:
+      enabled: true
+      rss_url: "https://www.coindesk.com/arc/outboundfeeds/rss/"
+      poll_interval: 120
+
+  layer3:
+    earnings_calendar:
+      enabled: true
+      source: "yahoo_finance"
+      poll_interval: 3600  # 每小时一次足够
+
+# 经济数据日历
+economic_calendar:
+  enabled: true
+  sources:
+    - "https://www.bls.gov/schedule/"
+    - "https://www.bea.gov/news/schedule"
+  advance_notice_hours: 24  # 提前24小时提醒
+  post_data_analysis: true  # 数据公布后15分钟内推送解读
+
+# AI模型配置（统一使用DeepSeek-V4-Flash，免费用到2026年底）
+ai:
+  model: "deepseek-v4-flash"
+  api_base: "${DEEPSEEK_API_BASE}"
+  api_key: "${DEEPSEEK_API_KEY}"
+
+  # 初筛配置
+  screener:
+    max_tokens: 200
+    temperature: 0.1
+
+  # 深度分析配置
+  analyzer:
+    max_tokens: 2000
+    temperature: 0.3
+
+  # 次日总结配置
+  verifier:
+    max_tokens: 3000
+    temperature: 0.2
+
+# Telegram配置
+telegram:
+  bot_token: "${TELEGRAM_BOT_TOKEN}"
+  chat_id: "${TELEGRAM_CHAT_ID}"
+  # 按重要性分级推送
+  push_rules:
+    importance_5: "immediate"  # 立即推送+10分钟后重推
+    importance_4: "immediate"  # 立即推送
+    importance_3: "hourly_batch"  # 每小时汇总
+  # 静默时段（可选）
+  quiet_hours:
+    enabled: false
+    start: "01:00"
+    end: "06:00"
+    timezone: "Asia/Shanghai"
+    bypass_importance: 5  # 5级事件无视静默
+
+# 市场数据
+market_data:
+  us_stocks:
+    provider: "yahoo_finance"
+    cache_ttl: 300
+  crypto:
+    provider: "binance"
+    api_base: "https://api.binance.com"
+    cache_ttl: 60
+
+# 次日验证
+verification:
+  enabled: true
+  cron: "0 8 * * *"  # 每日北京时间8:00
+  timezone: "Asia/Shanghai"
+  price_change_threshold: 0.5  # 涨跌幅<0.5%记为partial
+
+# 数据库
+database:
+  path: "./data/events.db"
+
+# 自定义关注的标的（Phase 4功能，先预留）
+watchlist:
+  us_stocks: []  # ["SNDK", "NVDA", "NFLX", "AAPL"]
+  crypto: []     # ["BTC", "ETH", "SOL"]
+  indices: []    # ["QQQ", "SPY"]

@@ -1,0 +1,20 @@
+# 忽略文件
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 数据库与数据
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+
+# 系统
+.DS_Store
+*.log

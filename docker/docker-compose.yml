@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  # 自建 RSSHub：统一转换非 RSS 源为标准 RSS
+  rsshub:
+    image: diygod/rsshub:latest
+    container_name: rsshub
+    restart: unless-stopped
+    ports:
+      - "1200:1200"
+    environment:
+      - NODE_ENV=production
+      - CACHE_TYPE=memory
+      - CACHE_EXPIRE=600
+    # 若需访问受限源可配置代理
+    # - PROXY_URI=http://your-proxy:7890
+
+  # fin-alert 主应用
+  fin-alert:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: fin-alert
+    restart: unless-stopped
+    depends_on:
+      - rsshub
+    env_file:
+      - ../.env
+    environment:
+      - RSSHUB_URL=http://rsshub:1200
+    volumes:
+      - ../data:/app/data

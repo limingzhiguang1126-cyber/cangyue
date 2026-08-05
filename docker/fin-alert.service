@@ -1,0 +1,20 @@
+# systemd 服务单元示例：保证 fin-alert 7x24 运行
+# 安装：cp fin-alert.service /etc/systemd/system/ && systemctl daemon-reload
+# 启动：systemctl enable --now fin-alert
+[Unit]
+Description=Fin-Alert Financial Event Alert System
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/fin-alert
+EnvironmentFile=/opt/fin-alert/.env
+ExecStart=/opt/fin-alert/.venv/bin/python -m src.main
+Restart=always
+RestartSec=10
+# 简单资源限制
+MemoryMax=1G
+
+[Install]
+WantedBy=multi-user.target
