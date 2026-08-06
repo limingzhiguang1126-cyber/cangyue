@@ -76,10 +76,10 @@ cd docker && docker compose up -d
 
 默认在 `localhost:1200` 起一个 RSSHub 实例，Truth Social / Musk X 等路由依赖它。
 
-### 5. 筛选币安小市值标的（可选工具）
+### 5. 筛选币安小市值合约标的（可选工具）
 
 ```bash
-# 输出币安 USDT 现货中市值最小的 50 个标的（表格）
+# 输出“有 USDT-M 永续合约 + 现货/Alpha”中市值最小的 50 个标的（表格）
 python -m src.screener.binance_smallcap --top 50
 
 # JSON 输出 / 写入文件
@@ -87,10 +87,20 @@ python -m src.screener.binance_smallcap --top 50 --json
 python -m src.screener.binance_smallcap --top 50 --output data/smallcap_top50.json
 ```
 
-实现说明：
-- 数据源：币安现货 24h 行情（`data-api.binance.vision`，国内可达）+ CoinLore 全市场市值排名（免费无需 key）
-- 筛选逻辑：币安 USDT 现货 ∩ CoinLore 有市值数据 → 价格交叉验证剔除同名冲突币（CoinLore symbol 偶发与币安不是同一币）→ 剔除稳定币 → 按估算市值（币安实时价格 × 流通供应量）升序取 Top N
-- 同名冲突黑名单见 `src/screener/binance_smallcap.py` 的 `KNOWN_MISMATCH`
+实现说明（v2）：
+- 筛选条件：**有币安 USDT-M 永续合约** 且（**币安现货** 或 **Binance Alpha**）的标的，按市值升序取 Top N
+- 数据源：
+  - 币安现货 24h 行情：`data-api.binance.vision`（国内可达）
+  - 币安 U 本位合约交易对：`data.binance.vision` S3 桶（`fapi.binance.com` 直连常被墙）
+  - Binance Alpha 全 token 列表（自带权威 marketCap / circulatingSupply）：`www.binance.com/bapi/...`，经 CORS 代理转发
+  - CoinLore 全市场供应量（补充现货-only 币的估算）
+- 市值口径（可信到次可信）：
+  1. Binance Alpha 官方 marketCap（Alpha 版本与币安现货价格一致，或该币仅在 Alpha）
+  2. CoinLore 估算市值 = 币安实时价 × max(csupply, tsupply)，价格交叉验证通过（0.3~3.0）
+- 可靠性处理：
+  - 同名冲突（CoinLore 匹配到错误同名币）通过价格交叉验证 + 黑名单（`UNRELIABLE_COINLORE`）过滤
+  - 仅 Alpha 的币要求 `offline=False`（仍在 Alpha 交易），避免已下架历史残留币
+  - 用 tsupply 而非 csupply 估算，避免 BTTC 等小币供应量失真（差 1000 倍）导致市值虚低
 
 ## 🧪 运行测试
 
