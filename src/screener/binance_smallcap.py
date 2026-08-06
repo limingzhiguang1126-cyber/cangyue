@@ -514,8 +514,9 @@ def build_smallcap_list(
             })
 
     if sort_by == "fdv":
-        # 按 FDV 升序；FDV 缺失（None）的排在最后
-        results.sort(key=lambda r: (r.get("fdv") is None, r.get("fdv") or 0.0))
+        # 按 FDV 升序；FDV 缺失（None）的排在最后；同 FDV 按市值、symbol 保证确定性
+        results.sort(key=lambda r: (r.get("fdv") is None, r.get("fdv") or 0.0,
+                                    r["market_cap"], r["symbol"]))
     else:
         results.sort(key=lambda r: r["market_cap"])
     logger.info("valid candidates: %d, returning top %d (sort_by=%s)", len(results), top, sort_by)
