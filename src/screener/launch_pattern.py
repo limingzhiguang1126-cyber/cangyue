@@ -1,4 +1,10 @@
-"""小币种"启动前/启动初期"特征分析器（v1）。
+"""小币种"启动前/启动初期"特征分析器（v1，币安官方 fapi 视角）。
+
+> 与仓库内 launch_analyzer.py（基于 Gate 数据源）互补：
+> 本模块全部走**币安官方 fapi**（经 CORS 代理），额外提供
+> 大户多空比（topLongShortAccountRatio）、主动买卖比（takerlongshortRatio）、
+> 币安资金费率、币安 OI 等 Gate 没有的维度；launch_analyzer 侧重现货 K 线
+> 起爆点检测与 Gate 永续 OI。两者可交叉验证。
 
 针对涨幅榜热门小币（如 HEI/BICO/TUT/SKYAI），自动拉取币安合约的
 K 线、持仓量、资金费率、大户多空比、主动买卖比等数据，输出结构化的
