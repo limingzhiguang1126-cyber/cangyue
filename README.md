@@ -76,6 +76,22 @@ cd docker && docker compose up -d
 
 默认在 `localhost:1200` 起一个 RSSHub 实例，Truth Social / Musk X 等路由依赖它。
 
+### 5. 筛选币安小市值标的（可选工具）
+
+```bash
+# 输出币安 USDT 现货中市值最小的 50 个标的（表格）
+python -m src.screener.binance_smallcap --top 50
+
+# JSON 输出 / 写入文件
+python -m src.screener.binance_smallcap --top 50 --json
+python -m src.screener.binance_smallcap --top 50 --output data/smallcap_top50.json
+```
+
+实现说明：
+- 数据源：币安现货 24h 行情（`data-api.binance.vision`，国内可达）+ CoinLore 全市场市值排名（免费无需 key）
+- 筛选逻辑：币安 USDT 现货 ∩ CoinLore 有市值数据 → 价格交叉验证剔除同名冲突币（CoinLore symbol 偶发与币安不是同一币）→ 剔除稳定币 → 按估算市值（币安实时价格 × 流通供应量）升序取 Top N
+- 同名冲突黑名单见 `src/screener/binance_smallcap.py` 的 `KNOWN_MISMATCH`
+
 ## 🧪 运行测试
 
 ```bash
