@@ -275,8 +275,8 @@ def analyze_symbol(
         return res
     res["futures_symbol"] = fsym
 
-    # 现货 K 线（5m / 15m）；若无现货，用合约 K 线兑底（Alpha-only 币）
-    k5 = k15 = []
+    # 现货 K 线（5m / 15m / 1h）；若无现货，用合约 K 线兑底（Alpha-only 币）
+    k5 = k15 = k1h = []
     source = "spot"
     try:
         k5 = fetch_spot_klines(spot_symbol, "5m", 300)
@@ -286,11 +286,16 @@ def analyze_symbol(
         k15 = fetch_spot_klines(spot_symbol, "15m", 300)
     except Exception as exc:  # noqa: BLE001
         logger.debug("%s spot 15m klines failed: %s", base, exc)
+    try:
+        k1h = fetch_spot_klines(spot_symbol, "1h", 200)
+    except Exception as exc:  # noqa: BLE001
+        logger.debug("%s spot 1h klines failed: %s", base, exc)
 
     if len(k5) < 60:
-        # 现货无 K 线：尝试合约 5m/15m K 线（fapi）
+        # 现货无 K 线：尝试合约 5m/15m/1h K 线（fapi）
         fk5 = _fapi(f"/fapi/v1/klines?symbol={fsym}&interval=5m&limit=300", timeout=40)
         fk15 = _fapi(f"/fapi/v1/klines?symbol={fsym}&interval=15m&limit=300", timeout=40)
+        fk1h = _fapi(f"/fapi/v1/klines?symbol={fsym}&interval=1h&limit=200", timeout=40)
         if fk5 and len(fk5) >= 60:
             k5 = [{"ts": int(k[0]), "open": _f(k[1]), "high": _f(k[2]), "low": _f(k[3]),
                    "close": _f(k[4]), "vol_usd": _f(k[7])} for k in fk5]
@@ -298,6 +303,9 @@ def analyze_symbol(
         if fk15 and len(fk15) >= 60:
             k15 = [{"ts": int(k[0]), "open": _f(k[1]), "high": _f(k[2]), "low": _f(k[3]),
                     "close": _f(k[4]), "vol_usd": _f(k[7])} for k in fk15]
+        if fk1h and len(fk1h) >= 48:
+            k1h = [{"ts": int(k[0]), "open": _f(k[1]), "high": _f(k[2]), "low": _f(k[3]),
+                    "close": _f(k[4]), "vol_usd": _f(k[7])} for k in fk1h]
 
     if len(k5) < 60:
         res["status"] = "no_klines"
@@ -319,11 +327,31 @@ def analyze_symbol(
     last_bar_vol = k5[-1]["vol_usd"]
     vol_ratio_last = last_bar_vol / avg_vol24 if avg_vol24 > 0 else 0.0
 
-    # 24h 量能 vs 前 7 天均量（用 5m K 线粗算）
-    last288 = sum(k["vol_usd"] for k in k5[-288:])
-    prev = k5[:-288]
-    prev_avg = _mean(k["vol_usd"] for k in prev) if prev else 0.0
-    vol_ratio_24h = (last288 / 288) / prev_avg if prev_avg > 0 else 0.0
+    # 24h 量能 vs 前期日均（"量比"，口径：近 24h 成交额 ÷ 此前数日日均成交额）
+    # 修复前：用 k5[-288:] 之前仅有的 12 根 5m（= 前 1 小时）做分母，量比被地量虚高
+    # 修复后：优先用 1h K 线（200 根 ≈ 8.3 天）取此前日均；数据不足则输出 None，不再虚算
+    vol_ratio_24h: Optional[float] = None
+    vol_24h_usd = 0.0
+    vol_prev_daily_avg_usd = 0.0
+    if len(k1h) >= 48:  # 至少 2 天数据
+        last24 = sum(k["vol_usd"] for k in k1h[-24:])
+        prev = k1h[:-24]
+        if prev:
+            prev_days = len(prev) / 24.0
+            prev_daily = sum(k["vol_usd"] for k in prev) / prev_days
+            if prev_daily > 0:
+                vol_24h_usd = last24
+                vol_prev_daily_avg_usd = prev_daily
+                vol_ratio_24h = last24 / prev_daily
+    elif len(k5) >= 576:  # 5m 兜底：至少 1 天历史基线（288 根）
+        last288 = sum(k["vol_usd"] for k in k5[-288:])
+        prev = k5[:-288]
+        if len(prev) >= 288:
+            prev_daily = sum(k["vol_usd"] for k in prev) / (len(prev) / 288.0)
+            if prev_daily > 0:
+                vol_24h_usd = last288
+                vol_prev_daily_avg_usd = prev_daily
+                vol_ratio_24h = last288 / prev_daily
 
     # 距近期高点回撤（近 24h 高点）
     hi24 = max(k["high"] for k in k5[-288:]) if len(k5) >= 288 else max(k["high"] for k in k5)
@@ -350,7 +378,9 @@ def analyze_symbol(
     res["volume"] = {
         "vol_ratio_5m": round(vol_ratio_5m, 2),
         "vol_ratio_last_bar": round(vol_ratio_last, 2),
-        "vol_ratio_24h_vs_7d": round(vol_ratio_24h, 2),
+        "vol_ratio_24h_vs_7d": round(vol_ratio_24h, 2) if vol_ratio_24h is not None else None,
+        "vol_24h_usd": round(vol_24h_usd, 0),
+        "vol_prev_daily_avg_usd": round(vol_prev_daily_avg_usd, 0),
     }
 
     # 合约数据（OI / taker / 大户多空比 / 资金费率）
@@ -435,12 +465,14 @@ def analyze_symbol(
     else:
         notes.append(f"5m 量能 {vol_ratio_5m:.1f}x 不足")
 
-    # 4) 24h 量能相对 7 天放大
-    if vol_ratio_24h >= VOL_RATIO_24H_MIN:
+    # 4) 24h 量能相对前期日均放大
+    if vol_ratio_24h is not None and vol_ratio_24h >= VOL_RATIO_24H_MIN:
         score += 1.5
         notes.append(f"24h 量比 {vol_ratio_24h:.1f}x")
-    else:
+    elif vol_ratio_24h is not None:
         notes.append(f"24h 量比 {vol_ratio_24h:.1f}x 不足")
+    else:
+        notes.append("24h 量比 数据不足")
 
     # 5) OI 放大（持仓进场）
     fu = res.get("futures", {})
@@ -584,10 +616,12 @@ def main(argv: Optional[List[str]] = None) -> int:
         ls = r.get("long_short", {})
         fr = r.get("funding", {})
         notes = "; ".join(r.get("notes", []))
+        r24 = v.get("vol_ratio_24h_vs_7d")
+        r24_s = f"{r24:,.1f}" if r24 is not None else "--"
         print(
             f"{r.get('status','?'):<10}{r['symbol']:<10}{r.get('price',0):>12,.6g}"
             f"{m.get('m5_1',0):>7,.1f}{m.get('m15_1',0):>7,.1f}"
-            f"{v.get('vol_ratio_5m',0):>8,.1f}{v.get('vol_ratio_24h_vs_7d',0):>8,.1f}"
+            f"{v.get('vol_ratio_5m',0):>8,.1f}{r24_s:>8}"
             f"{fu.get('oi_x_early_to_now',0):>6,.1f}{tk.get('buy_sell_avg_1h',0):>7,.2f}"
             f"{ls.get('ratio_avg_1h',0):>7,.2f}{fr.get('latest_bps',0):>8,.1f}"
             f"{m.get('drawdown_24h_pct',0):>7,.1f}  {notes[:60]}"

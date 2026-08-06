@@ -64,11 +64,14 @@ def _patch_basic(monkey, closes, vols, oi_vals, taker_ratios, ls_ratios, funding
     """替换 analyze_symbol 依赖的网络函数，返回恢复句柄。"""
     k5 = _mk_klines(closes, vols, interval_min=5)
     k15 = _mk_klines(closes[::3], vols[::3], interval_min=15)
+    k1h = _mk_klines(closes[::12], vols[::12], interval_min=60)
 
     def fake_spot_klines(symbol, interval, limit):
         if interval == "5m":
             return k5
-        return k15
+        if interval == "15m":
+            return k15
+        return k1h
 
     def fake_oi(symbol, period="5m", limit=200):
         return _mk_oi(oi_vals)
@@ -216,6 +219,59 @@ def test_quiet_status():
 def test_no_futures():
     res = ms.analyze_symbol("NOFUT", {}, {})
     assert res["status"] == "no_futures"
+
+
+def test_vol_ratio_24h_real_daily_baseline():
+    """回归测试：24h 量比必须与『此前日均成交额』比较，不能只取前 1 小时。
+
+    旧实现只拉 300 根 5m，分母只剩 12 根（前 1 小时）；若前 1 小时恰好是地量，
+    量比会被虚高到数倍（如 C98 的 5.4x，真实仅 ~0.9x）。
+    这里构造：近 24h 成交额 = 此前日均的 2 倍 → 量比应约为 2.0。
+    """
+    # 此前 3 天（864 根 5m）：每根 100 → 日均 28800（1h 口径 2400）
+    # 近 24h（288 根 5m）：每根 200 → 总 57600（1h 口径 4800）
+    closes = [1.0] * 1152
+    vols = [100.0] * 864 + [200.0] * 288
+    oi_vals = [100_000.0] * 200
+    mon = _patch_basic(None, closes, vols, oi_vals, [1.0] * 30, [1.0] * 30, [0.0001] * 20)
+    try:
+        res = ms.analyze_symbol("TESTX", {"TESTX": "TESTXUSDT"}, {})
+        v = res["volume"]
+        assert v["vol_24h_usd"] == 4800, v
+        assert v["vol_prev_daily_avg_usd"] == 2400, v
+        # 量比 = 4800 / 2400 = 2.0（真实基准），而非旧算法的 6.9x
+        assert v["vol_ratio_24h_vs_7d"] == 2.0, v
+    finally:
+        mon.restore()
+
+
+def test_vol_ratio_24h_none_when_insufficient_history():
+    """历史基线不足时应输出 None（不再虚算一个值）。"""
+    # 共 300 根 5m = 近 24h 量 + 仅 12 根历史 → 不足 1 天基线，量比应为 None
+    closes = [1.0] * 300
+    vols = [200.0] * 288 + [100.0] * 12
+    oi_vals = [100_000.0] * 200
+    mon = _patch_basic(None, closes, vols, oi_vals, [1.0] * 30, [1.0] * 30, [0.0001] * 20)
+    try:
+        res = ms.analyze_symbol("TESTX", {"TESTX": "TESTXUSDT"}, {})
+        assert res["volume"]["vol_ratio_24h_vs_7d"] is None, res
+    finally:
+        mon.restore()
+
+
+def test_launching_status_depends_on_24h_vol_baseline():
+    """launching 判定不应被虚高的 24h 量比带偏：5m 放量 + OI 放大即可成立。"""
+    # 前 288 根低量横盘，后 3 根 5m 放量上涨（5m 量比 > 1.8）
+    closes = [1.0] * 290 + [1.02, 1.04, 1.06]
+    vols = [100.0] * 290 + [500.0, 800.0, 1000.0]
+    oi_vals = [100_000.0] * 100 + [200_000.0] * 100
+    mon = _patch_basic(None, closes, vols, oi_vals, [1.15] * 30, [1.3] * 30, [0.00005] * 20)
+    try:
+        res = ms.analyze_symbol("TESTX", {"TESTX": "TESTXUSDT"}, {})
+        assert res["status"] == "launching", res
+        assert res["volume"]["vol_ratio_5m"] >= 1.8, res
+    finally:
+        mon.restore()
 
 
 def test_load_smallcap_list(tmp_path):
