@@ -1,0 +1,202 @@
+[
+  {
+    "symbol": "HEIUSDT",
+    "daily": {
+      "range_high": 0.13281,
+      "range_low": 0.07851,
+      "range_pct": 69.2,
+      "avg_quote_vol": 11.6,
+      "recent3d": [
+        {
+          "date": "08-04 00:00",
+          "close": 0.12911,
+          "chg_pct": 48.6,
+          "vol_M": 73.8
+        },
+        {
+          "date": "08-05 00:00",
+          "close": 0.26824,
+          "chg_pct": 107.8,
+          "vol_M": 734.2
+        },
+        {
+          "date": "08-06 00:00",
+          "close": 0.25077,
+          "chg_pct": -6.5,
+          "vol_M": 1013.0
+        }
+      ]
+    },
+    "oi": {
+      "early_avg": 29.26,
+      "peak": 79.57,
+      "latest": 52.57,
+      "peak_vs_early": 2.72,
+      "latest_vs_peak": 0.66
+    },
+    "funding": {
+      "early_avg_bps": -0.87,
+      "recent_avg_bps": -2.21,
+      "latest_bps": -5.66
+    },
+    "long_short": {
+      "early_avg": 0.869,
+      "recent_avg": 0.443,
+      "latest": 0.643
+    },
+    "taker": {
+      "recent_avg": 1.056,
+      "latest": 1.016
+    }
+  },
+  {
+    "symbol": "BICOUSDT",
+    "daily": {
+      "range_high": 0.01989,
+      "range_low": 0.01121,
+      "range_pct": 77.4,
+      "avg_quote_vol": 15.9,
+      "recent3d": [
+        {
+          "date": "08-04 00:00",
+          "close": 0.02111,
+          "chg_pct": 25.5,
+          "vol_M": 96.5
+        },
+        {
+          "date": "08-05 00:00",
+          "close": 0.02715,
+          "chg_pct": 28.6,
+          "vol_M": 131.9
+        },
+        {
+          "date": "08-06 00:00",
+          "close": 0.03638,
+          "chg_pct": 34.0,
+          "vol_M": 82.2
+        }
+      ]
+    },
+    "oi": {
+      "early_avg": 225.44,
+      "peak": 464.69,
+      "latest": 383.58,
+      "peak_vs_early": 2.06,
+      "latest_vs_peak": 0.83
+    },
+    "funding": {
+      "early_avg_bps": 0.74,
+      "recent_avg_bps": 0.59,
+      "latest_bps": 0.69
+    },
+    "long_short": {
+      "early_avg": 2.447,
+      "recent_avg": 1.15,
+      "latest": 1.179
+    },
+    "taker": {
+      "recent_avg": 1.023,
+      "latest": 0.941
+    }
+  },
+  {
+    "symbol": "TUTUSDT",
+    "daily": {
+      "range_high": 0.0224,
+      "range_low": 0.00943,
+      "range_pct": 137.5,
+      "avg_quote_vol": 4.4,
+      "recent3d": [
+        {
+          "date": "08-04 00:00",
+          "close": 0.02157,
+          "chg_pct": 5.8,
+          "vol_M": 33.3
+        },
+        {
+          "date": "08-05 00:00",
+          "close": 0.02865,
+          "chg_pct": 32.9,
+          "vol_M": 24.2
+        },
+        {
+          "date": "08-06 00:00",
+          "close": 0.02627,
+          "chg_pct": -8.3,
+          "vol_M": 17.5
+        }
+      ]
+    },
+    "oi": {
+      "early_avg": 201.08,
+      "peak": 326.5,
+      "latest": 256.17,
+      "peak_vs_early": 1.62,
+      "latest_vs_peak": 0.78
+    },
+    "funding": {
+      "early_avg_bps": 0.43,
+      "recent_avg_bps": 0.32,
+      "latest_bps": -0.21
+    },
+    "long_short": {
+      "early_avg": 2.717,
+      "recent_avg": 1.341,
+      "latest": 1.425
+    },
+    "taker": {
+      "recent_avg": 1.064,
+      "latest": 0.937
+    }
+  },
+  {
+    "symbol": "SKYAIUSDT",
+    "daily": {
+      "range_high": 0.05259,
+      "range_low": 0.02273,
+      "range_pct": 131.4,
+      "avg_quote_vol": 23.7,
+      "recent3d": [
+        {
+          "date": "08-04 00:00",
+          "close": 0.05242,
+          "chg_pct": 30.0,
+          "vol_M": 206.0
+        },
+        {
+          "date": "08-05 00:00",
+          "close": 0.06702,
+          "chg_pct": 27.8,
+          "vol_M": 127.6
+        },
+        {
+          "date": "08-06 00:00",
+          "close": 0.08205,
+          "chg_pct": 22.5,
+          "vol_M": 89.7
+        }
+      ]
+    },
+    "oi": {
+      "early_avg": 205.0,
+      "peak": 236.25,
+      "latest": 190.25,
+      "peak_vs_early": 1.15,
+      "latest_vs_peak": 0.81
+    },
+    "funding": {
+      "early_avg_bps": 0.5,
+      "recent_avg_bps": 1.58,
+      "latest_bps": 2.31
+    },
+    "long_short": {
+      "early_avg": 1.42,
+      "recent_avg": 0.928,
+      "latest": 0.92
+    },
+    "taker": {
+      "recent_avg": 0.987,
+      "latest": 1.026
+    }
+  }
+]

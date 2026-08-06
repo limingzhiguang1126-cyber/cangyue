@@ -30,6 +30,7 @@ import argparse
 import datetime as _dt
 import json
 import logging
+import sys
 import time
 import urllib3
 from typing import Any, Dict, List, Optional
@@ -40,6 +41,13 @@ from ..utils.logger import setup_logging
 
 setup_logging()
 logger = logging.getLogger("fin-alert.screener.launch")
+
+# JSON 输出时需干净 stdout：把根 logger 的 handler 重定向到 stderr
+for _h in logging.getLogger().handlers:
+    try:
+        _h.setStream(sys.stderr)
+    except Exception:  # noqa: BLE001
+        pass
 
 urllib3.disable_warnings()
 
@@ -268,6 +276,14 @@ def main() -> None:
     if not symbols:
         parser.error("请提供 --symbols 或 --top-gainers")
 
+    if args.json:
+        # 保证 JSON 输出时 stdout 纯净：日志重定向到 stderr（须在分析前）
+        for _h in logging.getLogger().handlers:
+            try:
+                _h.setStream(sys.stderr)
+            except Exception:  # noqa: BLE001
+                pass
+
     out: List[Dict[str, Any]] = []
     for i, sym in enumerate(symbols):
         logger.info("analyzing %s (%d/%d)", sym, i + 1, len(symbols))
@@ -275,6 +291,12 @@ def main() -> None:
         time.sleep(0.6)
 
     if args.json:
+        # 保证 JSON 输出时 stdout 纯净：日志重定向到 stderr（须在分析前）
+        for _h in logging.getLogger().handlers:
+            try:
+                _h.setStream(sys.stderr)
+            except Exception:  # noqa: BLE001
+                pass
         print(json.dumps(out, ensure_ascii=False, indent=2))
     else:
         for r in out:
