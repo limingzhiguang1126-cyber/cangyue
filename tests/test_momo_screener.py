@@ -138,9 +138,45 @@ def test_launching_status():
 
 
 def test_hot_status():
-    # 5m 单根爆拉 15%（过热，不追）
+    # 5m 单根爆拉 15%（超过 12% 过热，不追）
     closes = [1.0] * 290 + [1.15]
     vols = [100.0] * 290 + [5000.0]
+    oi_vals = [100_000.0] * 200
+    mon = _patch_basic(None, closes, vols, oi_vals, [1.2] * 30, [1.2] * 30, [0.0005] * 20)
+    try:
+        res = ms.analyze_symbol("TESTX", {"TESTX": "TESTXUSDT"}, {})
+        assert res["status"] == "hot", res
+    finally:
+        mon.restore()
+
+
+def test_15m_20pct_not_hot():
+    """用户反馈：15 分钟涨幅 20% 左右仍应可关注，不视为过热。"""
+    # k15 = closes[::3]，所以最后两根 15m 收盘 = closes[285] 与 closes[288]
+    # 令 closes[285]=1.0、closes[288]=1.20 → 15m 涨幅 +20%；单根 5m 收盘平盘不触发 5m 过热
+    closes = [1.0] * 285 + [1.0, 1.0, 1.0, 1.20, 1.20, 1.20]
+    vols = [100.0] * 288 + [800.0, 1000.0, 1200.0]
+    oi_vals = [100_000.0] * 100 + [300_000.0] * 100  # OI 放大 3x
+    taker = [1.2] * 30
+    ls = [1.3] * 30
+    funding = [0.00005] * 20
+    mon = _patch_basic(None, closes, vols, oi_vals, taker, ls, funding)
+    fmap = {"TESTX": "TESTXUSDT"}
+    try:
+        res = ms.analyze_symbol("TESTX", fmap, {})
+        # 15m 动量 +20% 属于可关注区间（< 25%），不应判为 hot
+        assert res["momentum"]["m15_1"] >= 20.0, res
+        assert res["status"] != "hot", res
+        assert res["status"] == "launching", res
+    finally:
+        mon.restore()
+
+
+def test_15m_over_25pct_hot():
+    """15 分钟涨幅超过 25% 才视为过热。"""
+    # closes[285]=1.0、closes[288]=1.30 → 15m 涨幅 +30% > 25% 过热
+    closes = [1.0] * 285 + [1.0, 1.0, 1.0, 1.30, 1.30, 1.30]
+    vols = [100.0] * 288 + [5000.0, 6000.0, 7000.0]
     oi_vals = [100_000.0] * 200
     mon = _patch_basic(None, closes, vols, oi_vals, [1.2] * 30, [1.2] * 30, [0.0005] * 20)
     try:

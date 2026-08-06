@@ -7,7 +7,8 @@
 
 策略参考（基于已涨币 HEI/BICO/TUT/SKYAI/HFT 等启动前后特征归纳）：
 - 健康启动：放量 5~7x 温和起步（单根 3~5%）、量比 2~5x、OI 同步放大、主动买盘占优
-- 危险追高：单根爆拉 >10%、量比 >20x（情绪过热）、OI 不跟（纯现货盘）、资金费率过热
+- 危险追高：单根爆拉 >25%（15m）/ >12%（5m）、量比 >20x（情绪过热）、OI 不跟（纯现货盘）、资金费率过热
+- 阈值口径按用户反馈放宽：15 分钟涨幅在 20% 左右的标的仍可关注（仅超 25% 才视为过热不追）
 - 本工具扫描小市值列表，按 5m / 15m 动量 + 24h 量能放大 + 合约 OI 变化 + 主动买卖比打分，
   输出"当前处于启动初期（第一段刚确认）"的候选，供用户从小市值池里筛选。
 
@@ -60,12 +61,13 @@ _HEADERS = {"User-Agent": "Mozilla/5.0", "Origin": "https://cnb.cool"}
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "data")
 
 # 启动初期信号阈值（基于已涨币 HEI/BICO/HFT/TUT 启动特征校准）
+# 2026-08-06 按用户反馈放宽：15 分钟涨幅 20% 左右仍可关注，仅超 25% 才视为过热
 MOMENTUM_5M_MIN = 1.5        # 5m 涨幅最低门槛（%）
-MOMENTUM_5M_PREF = 2.5       # 5m 涨幅"优秀"线（%）
+MOMENTUM_5M_PREF = 5.0       # 5m 涨幅"优秀"线（%）
 MOMENTUM_15M_MIN = 2.0       # 15m 涨幅最低门槛（%）
-MOMENTUM_15M_PREF = 3.5      # 15m 涨幅"优秀"线（%）
-HOT_5M = 8.0                 # 5m 涨幅超过此值视为情绪过热（不追）
-HOT_15M = 12.0               # 15m 涨幅超过此值视为情绪过热（不追）
+MOMENTUM_15M_PREF = 15.0     # 15m 涨幅"优秀"线（%）
+HOT_5M = 12.0                # 5m 涨幅超过此值视为情绪过热（不追）
+HOT_15M = 25.0               # 15m 涨幅超过此值才视为情绪过热（不追）
 VOL_RATIO_5M_MIN = 1.8       # 5m 量能放大倍数门槛（相对 24h 均量）
 VOL_RATIO_5M_PREF = 3.0      # 5m 量能放大"优秀"线
 VOL_RATIO_24H_MIN = 1.5      # 24h 量比（vs 前期）最低门槛
@@ -401,7 +403,7 @@ def analyze_symbol(
     score = 0.0
     notes: List[str] = []
 
-    # 1) 5m 动量：适中放大（1.5~8%），超过 8% 视为过热
+    # 1) 5m 动量：适中放大（1.5~12%），超过 12% 视为过热
     if HOT_5M >= mom5_1 >= MOMENTUM_5M_MIN:
         score += 2.0
         if mom5_1 >= MOMENTUM_5M_PREF:
@@ -413,11 +415,12 @@ def analyze_symbol(
         score -= 1.0
         notes.append(f"5m +{mom5_1:.1f}% 未达启动线")
 
-    # 2) 15m 动量
+    # 2) 15m 动量：按用户反馈放宽，15m 涨幅 20% 左右仍可关注，仅超 25% 视为过热
     if HOT_15M >= mom15 >= MOMENTUM_15M_MIN:
         score += 1.5
         if mom15 >= MOMENTUM_15M_PREF:
             score += 0.5
+            notes.append(f"15m +{mom15:.1f}% 强动量")
     elif mom15 > HOT_15M:
         notes.append(f"15m +{mom15:.1f}% 过热")
     else:
