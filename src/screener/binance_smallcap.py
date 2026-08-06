@@ -25,9 +25,10 @@
    - CoinLore（仅现货标的的 FDV 总供应量参考）: api.coinlore.net
 
 用法：
-    python -m src.screener.binance_smallcap --top 50
-    python -m src.screener.binance_smallcap --top 50 --json
-    python -m src.screener.binance_smallcap --top 50 --output data/smallcap_top50.json
+    python -m src.screener.binance_smallcap --top 50                            # 按流通市值升序
+    python -m src.screener.binance_smallcap --top 50 --sort fdv                 # 按 FDV 升序
+    python -m src.screener.binance_smallcap --top 50 --sort fdv --json
+    python -m src.screener.binance_smallcap --top 50 --sort fdv --output data/smallcap_top50_fdv.json
 """
 
 from __future__ import annotations
@@ -403,6 +404,7 @@ def build_smallcap_list(
     spot_ticker: Optional[Dict[str, Dict[str, Any]]] = None,
     alpha_tokens: Optional[List[Dict[str, Any]]] = None,
     coinlore: Optional[Dict[str, List[Dict[str, Any]]]] = None,
+    sort_by: str = "market_cap",
 ) -> List[Dict[str, Any]]:
     """主流程：当前 TRADING 的 USDT 永续合约 且 (现货 TRADING 或 Binance Alpha) 的标的中，
     按流通市值升序取 Top N，同时输出 FDV。
@@ -511,8 +513,12 @@ def build_smallcap_list(
                 "alpha_id": "",
             })
 
-    results.sort(key=lambda r: r["market_cap"])
-    logger.info("valid candidates: %d, returning top %d", len(results), top)
+    if sort_by == "fdv":
+        # 按 FDV 升序；FDV 缺失（None）的排在最后
+        results.sort(key=lambda r: (r.get("fdv") is None, r.get("fdv") or 0.0))
+    else:
+        results.sort(key=lambda r: r["market_cap"])
+    logger.info("valid candidates: %d, returning top %d (sort_by=%s)", len(results), top, sort_by)
     return results[:top]
 
 
@@ -526,9 +532,15 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--top", type=int, default=50, help="返回数量（默认 50）")
     parser.add_argument("--json", action="store_true", help="以 JSON 输出")
     parser.add_argument("--output", default="", help="可选：结果写入文件（JSON）")
+    parser.add_argument(
+        "--sort",
+        choices=("market_cap", "fdv"),
+        default="market_cap",
+        help="排序字段：market_cap（流通市值，默认）/ fdv（完全稀释市值，升序）",
+    )
     args = parser.parse_args(argv)
 
-    result = build_smallcap_list(top=args.top)
+    result = build_smallcap_list(top=args.top, sort_by=args.sort)
     if args.output:
         with open(args.output, "w", encoding="utf-8") as fh:
             json.dump(result, fh, ensure_ascii=False, indent=2)

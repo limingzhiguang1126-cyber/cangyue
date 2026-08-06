@@ -313,6 +313,54 @@ def test_build_smallcap_list_futures_filter():
     assert all(r["symbol"] != "DDD2" for r in result)
 
 
+def test_build_smallcap_list_sort_by_fdv():
+    """sort_by='fdv' 时按 FDV 升序；FDV 缺失（None）的排最后。
+
+    mock 数据：AAA fdv=2000、BBB fdv=5000、DDD fdv=5000（有 Alpha）。
+    → FDV 升序：AAA(2000) -> BBB/DDD(5000)；结果里没有 fdv=None 的（CCC 无 FDV）。
+    补充一个无 FDV 的现货币 CCC，验证它排最后。
+    """
+    coinlore = dict(_mock_coinlore())
+    # CCC 现货币：CoinLore 价格不匹配 -> fdv=None
+    coinlore["CCC"] = [
+        {"symbol": "CCC", "name": "Token CCC wrong", "rank": "30", "price_usd": "0.1",
+         "csupply": "3000", "tsupply": "3000"},
+    ]
+    result = build_smallcap_list(
+        top=10,
+        futures=_mock_futures(),
+        products=_mock_products(),
+        spot_ticker=_mock_spot_ticker(),
+        alpha_tokens=_mock_alpha(),
+        coinlore=coinlore,
+        sort_by="fdv",
+    )
+    fdv_list = [r.get("fdv") for r in result]
+    # FDV 升序（None 在最后）
+    assert fdv_list == sorted(fdv_list, key=lambda x: (x is None, x or 0.0))
+    assert result[0]["symbol"] == "AAA"
+    assert result[0]["fdv"] == 2000.0
+    # AAA(2000) < DDD(5000) < BBB(5000)；CCC(fdv=None) 排最后
+    order = [r["symbol"] for r in result]
+    assert order.index("AAA") < order.index("DDD") < order.index("BBB")
+    assert order[-1] == "CCC"
+
+
+def test_build_smallcap_list_default_sort_is_market_cap():
+    """默认按流通市值升序（AAA 1000 < DDD 2500 < BBB 5000），与旧行为一致。"""
+    result = build_smallcap_list(
+        top=10,
+        futures=_mock_futures(),
+        products=_mock_products(),
+        spot_ticker=_mock_spot_ticker(),
+        alpha_tokens=_mock_alpha(),
+        coinlore=_mock_coinlore(),
+    )
+    mcs = [r["market_cap"] for r in result]
+    assert mcs == sorted(mcs)
+    assert result[0]["symbol"] == "AAA"
+
+
 def test_build_smallcap_list_settling_excluded():
     """SETTLING 合约（ZZZUSDT 状态改 SETTLING）的标的即使有 Alpha 也不应入选。"""
     futures = dict(_mock_futures())
