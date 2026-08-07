@@ -28,6 +28,23 @@ import subprocess
 import sys
 from typing import Any, Dict, List, Optional
 
+# 兼容本地 .env（云端密钥由流水线 imports 注入，不受影响）
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:  # pragma: no cover
+    _env_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        ".env",
+    )
+    if os.path.exists(_env_path):
+        with open(_env_path, "r", encoding="utf-8") as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if _line and not _line.startswith("#") and "=" in _line:
+                    _k, _v = _line.split("=", 1)
+                    os.environ.setdefault(_k.strip(), _v.strip())
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.notifier.telegram_notifier import TelegramNotifier  # noqa: E402

@@ -25,6 +25,23 @@ import sys
 import time
 from typing import Any, Dict, List, Optional
 
+# 自动加载仓库根目录 .env（本地部署时填入 TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID 即可生效）
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:  # pragma: no cover
+    _env_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+        ".env",
+    )
+    if os.path.exists(_env_path):
+        with open(_env_path, "r", encoding="utf-8") as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if _line and not _line.startswith("#") and "=" in _line:
+                    _k, _v = _line.split("=", 1)
+                    os.environ.setdefault(_k.strip(), _v.strip())
+
 from ..notifier.telegram_notifier import TelegramNotifier
 from ..notifier.v11_message_formatter import format_signal_message
 from ..utils.logger import setup_logging
