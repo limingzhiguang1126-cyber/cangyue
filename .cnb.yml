@@ -6,9 +6,9 @@
 #  2) 每 15 分钟（*/15）扫描候选池，命中 v1.1 信号推送 Telegram
 #     （CNB 定时任务最小间隔为 5 分钟，此处按 v1.1 标准设为 15 分钟轮询节奏）
 #
-# 敏感信息（TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID）通过密钥仓库注入，
-# 请按 README「云端部署」一节创建密钥仓库后，
-# 将下方 imports 中的密钥仓库路径替换为你自己的，然后合并本文件。
+# 敏感信息（TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID）通过密钥仓库
+# qiang26/cangyue-secrets 的 telegram.yml 注入（用户已建好并提交）。
+# 如需换仓库，仅需替换下方 imports 中的路径即可。
 # ============================================================
 
 main:
@@ -18,7 +18,6 @@ main:
       docker:
         image: python:3.11-slim
       imports:
-        # TODO: 替换为你的密钥仓库路径（见 README「云端部署」）
         - https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml
       stages:
         - name: install-deps
@@ -46,7 +45,6 @@ main:
       docker:
         image: python:3.11-slim
       imports:
-        # TODO: 替换为你的密钥仓库路径（见 README「云端部署」）
         - https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml
       stages:
         - name: install-deps
