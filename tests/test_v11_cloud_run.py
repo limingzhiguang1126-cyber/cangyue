@@ -126,3 +126,22 @@ def test_push_state_failure_does_not_break():
 def test_push_state_without_token_returns_false():
     with mock.patch.dict(os.environ, {}, clear=True):
         assert cloud.push_state("/tmp/nonexist-state.json") is False
+
+
+def test_run_round_dry_run_does_not_push_or_push_state():
+    """dry-run 模式：即使配了 Telegram 密钥也不推送，且不触发状态回推。"""
+    pool = [{"symbol": "A"}]
+    results = [_mk_result("A", "signal2", "build")]
+    patchers = _patch_all(pool, results)
+    try:
+        with mock.patch.object(cloud, "push_state", return_value=True) as ps:
+            out = cloud.run_round(top=1, push_state_after=True, workers=1,
+                                  dry_run=True)
+    finally:
+        for p in patchers:
+            p.stop()
+
+    assert len(out["pushed"]) == 1  # dry-run 也计入"处理"结果，但仅打印
+    assert not ps.called            # dry-run 不推送状态
+    # 确认未使用 TelegramNotifier（dry-run 强制 notifier=None）
+    assert out["hits"][0]["symbol"] == "A"

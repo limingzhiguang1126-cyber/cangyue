@@ -52,3 +52,55 @@ main:
         - name: scan-and-push
           script: |
             python scripts/v11_cloud_run.py --top 100 --push-state
+
+# ============================================================
+# 网页手动触发（Web Trigger）—— 由 .cnb/web_trigger.yml 的按钮唤起
+#   · 手动信号扫描：点击「立即扫描信号」→ 立即跑一轮 v1.1 信号扫描并推送
+#   · 手动刷新候选池：点击「立即刷新候选池」→ 刷新 FDV Top100 并自动提交
+# ============================================================
+$:
+  web_trigger_scan_signals:
+    - name: manual-scan-signals
+      docker:
+        image: python:3.11-slim
+      imports:
+        - https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml
+      stages:
+        - name: install-deps
+          script: pip install -q -r requirements.txt
+        - name: scan-and-push
+          script: |
+            set -e
+            TOP="${top:-100}"
+            echo "[web_trigger] manual scan: top=${TOP} dry_run=${dry_run:-false}"
+            if [ "${dry_run:-false}" = "true" ]; then
+              python scripts/v11_cloud_run.py --top "$TOP" --dry-run
+            else
+              python scripts/v11_cloud_run.py --top "$TOP" --push-state
+            fi
+
+  web_trigger_refresh_pool:
+    - name: manual-refresh-pool
+      docker:
+        image: python:3.11-slim
+      imports:
+        - https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml
+      stages:
+        - name: install-deps
+          script: pip install -q -r requirements.txt
+        - name: refresh-smallcap-pool
+          script: |
+            python -m src.screener.binance_smallcap --top 100 --sort fdv \
+              --output data/smallcap_top100_fdv.json
+        - name: commit-and-push-pool
+          script: |
+            set -e
+            git config user.name "cnb"
+            git config user.email "cnb@cnb.cool"
+            git add data/smallcap_top100_fdv.json
+            if git diff --cached --quiet; then
+              echo "pool unchanged, skip commit"
+            else
+              git commit -m "chore(screener): 刷新 FDV Top100 候选池 [web-trigger]"
+              git push "https://cnb:${CNB_TOKEN}@cnb.cool/${CNB_REPO_SLUG}.git" HEAD:${CNB_BRANCH:-main}
+            fi

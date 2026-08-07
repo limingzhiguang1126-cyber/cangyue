@@ -10,6 +10,7 @@
 
 用法（在流水线中，token 来自 CNB_TOKEN 环境变量）：
     python scripts/v11_cloud_run.py --top 100 --push-state
+    python scripts/v11_cloud_run.py --top 100 --dry-run   # 只打印不推送（调试用）
 
 环境变量：
     TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID    Telegram 推送（必填）
@@ -100,19 +101,26 @@ def push_state(state_path: str) -> bool:
     return False
 
 
-def run_round(top: int, push_state_after: bool, workers: int) -> Dict[str, Any]:
+def run_round(top: int, push_state_after: bool, workers: int,
+              dry_run: bool = False) -> Dict[str, Any]:
     pool = watcher.load_pool(DEFAULT_POOL, top)
     futures_map = watcher.fetch_futures_symbols()
-    logger.info("scanning pool=%d (workers=%d)", len(pool), workers)
+    logger.info("scanning pool=%d (workers=%d) dry_run=%s", len(pool), workers, dry_run)
     results = watcher.scan_pool(pool, futures_map, workers=workers)
     hits = [r for r in results if r.get("signal") not in ("none",)]
     rank_map = {r.get("symbol"): idx + 1 for idx, r in enumerate(pool)}
 
+    # dry-run 模式不推送、不依赖 Telegram 密钥
     tg_token = os.getenv("TELEGRAM_BOT_TOKEN", "")
     tg_chat = os.getenv("TELEGRAM_CHAT_ID", "")
-    notifier = TelegramNotifier(bot_token=tg_token, chat_id=tg_chat) if tg_token and tg_chat else None
+    notifier = None
+    if not dry_run and tg_token and tg_chat:
+        notifier = TelegramNotifier(bot_token=tg_token, chat_id=tg_chat)
 
     dedup = daemon.SignalDeduplicator(state_path=DEFAULT_STATE, window_seconds=7200)
+
+    # 非 dry-run 且未配密钥时，日志前缀用 no-push 区分
+    log_prefix = "dry-run" if dry_run else "no-push"
 
     pushed: List[Dict[str, Any]] = []
     skipped: List[Dict[str, Any]] = []
@@ -121,7 +129,7 @@ def run_round(top: int, push_state_after: bool, workers: int) -> Dict[str, Any]:
         rank = rank_map.get(symbol, 0)
         msg = format_signal_message(r, pool_rank=rank)
         if notifier is None:
-            logger.info("[%s] %s", r.get("action"), msg.replace("\n", " | "))
+            logger.info("[%s] [%s] %s", log_prefix, r.get("action"), msg.replace("\n", " | "))
             pushed.append(r)
             continue
         if not dedup.is_new(r):
@@ -136,7 +144,7 @@ def run_round(top: int, push_state_after: bool, workers: int) -> Dict[str, Any]:
 
     logger.info("round done: scanned=%d hits=%d pushed=%d skipped_dup=%d",
                 len(results), len(hits), len(pushed), len(skipped))
-    if push_state_after:
+    if push_state_after and not dry_run:
         push_state(DEFAULT_STATE)
     return {"scanned": len(results), "hits": hits, "pushed": pushed, "skipped_dup": skipped}
 
@@ -145,9 +153,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(description="v1.1 信号云端执行器（CNB 定时任务）")
     ap.add_argument("--top", type=int, default=100)
     ap.add_argument("--push-state", action="store_true", help="扫描后把去重状态推回仓库")
+    ap.add_argument("--dry-run", action="store_true", help="只打印命中信号，不推送 Telegram（调试用，无需密钥）")
     ap.add_argument("--workers", type=int, default=8)
     args = ap.parse_args(argv)
-    run_round(top=args.top, push_state_after=args.push_state, workers=args.workers)
+    run_round(top=args.top, push_state_after=args.push_state, workers=args.workers,
+              dry_run=args.dry_run)
     return 0
 
 

@@ -1,0 +1,39 @@
+# ============================================================
+# 网页手动触发按钮配置（CNB 云原生构建 · Web Trigger）
+#
+# 作用：在仓库「代码-分支详情页」渲染自定义按钮，点击即可手动触发流水线。
+#   · 手动信号扫描：立即对候选池跑一轮 v1.1 信号扫描，命中即推送 Telegram
+#     （不用等 15 分钟的定时任务，调试/盯盘随时手动触发）
+#   · 手动刷新候选池：立即重新抓取币安数据刷新 FDV Top100 候选池
+#
+# 按钮触发的事件（web_trigger_*）需在 .cnb.yml 中配置对应流水线，否则无法触发。
+# 权限：默认有仓库写权限的用户即可点击；可通过 permissions 进一步限制。
+# ============================================================
+
+branch:
+  - # 不填 reg 则全部分支详情页都显示按钮
+    buttons:
+      - name: "立即扫描信号"
+        description: "手动跑一轮 v1.1 信号扫描，命中即推送 Telegram（无需等 15 分钟定时任务）"
+        event: web_trigger_scan_signals
+        groupName: "🔔 手动触发"
+        isDefault: true
+        inputs:
+          top:
+            name: "扫描数量"
+            type: select
+            default: "100"
+            options:
+              - { name: "Top 20", value: "20" }
+              - { name: "Top 50", value: "50" }
+              - { name: "Top 100", value: "100" }
+              - { name: "Top 200", value: "200" }
+          dry_run:
+            name: "只扫描不推送"
+            type: switch
+            default: "false"
+            description: "开启后仅打印命中信号，不推送 Telegram（调试用，无需密钥）"
+      - name: "立即刷新候选池"
+        description: "重新抓取币安数据，刷新 data/smallcap_top100_fdv.json 并自动提交"
+        event: web_trigger_refresh_pool
+        groupName: "🔔 手动触发"
