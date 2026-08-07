@@ -5,14 +5,14 @@
 - 线 1（小市值池）：改为按 FDV 从小到大取 Top 100。
 - 线 2（启动信号）：**废弃原有 momo_screener 的"5m/15m 动量 + 量价齐升"标准**，
   改为寻找"**之前大涨过、最近底部横盘**，或 **无量上涨**"的标的——
-  即已从高点回落、在底部区域缩量横盘整理、或低位启动但量能极小（如 20% 涨幅
+  即已从高点大幅回落（≥70%）、在底部区域横盘整理，或低位启动但量能极小（如 20% 涨幅
   合约日成交额仅几百万刀）的币。这类标的最容易出现"低吸埋伏"机会。
 
 本工具在 Top 100 小市值池内扫描，用日线判断：
-- 历史大涨：近 60 天出现过 ≥ +40% 的上涨段（相对近 60 天低点）。
-- 底部横盘：距近 60 天高点回撤 20~60%（已充分回调但未完全破位），且
-  近 5 天日振幅 ≤ 15%、近 3 天缩量（量 ≤ 前期均量 0.8x）。
-- 无量上涨：近 3 天累计涨幅 ≥ +10%，但日均合约成交额 ≤ $2M（"涨但没量"）。
+- 历史大涨：近 180 天出现过 ≥ +200%（至少几倍）的上涨段（峰值 bar 前的低点起算）。
+- 底部横盘：距近 180 天高点回撤 ≥ 70%（已充分回调），且
+  近一个月（30 天）振幅 ≤ 30%（底部横盘），**不看量能**。
+- 无量上涨：近 3 天累计涨幅 ≥ +10%，但日均合约成交额 < $5M（"涨但没量"）。
 - 附合约佐证：OI 变化方向、资金费率、主动买卖比（fapi 实时）。
 
 数据源（币安官方，fapi 经 CORS 代理）：
@@ -56,14 +56,17 @@ _HEADERS = {"User-Agent": "Mozilla/5.0", "Origin": "https://cnb.cool"}
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "data")
 
 # ---------------- 线 2 判定阈值（可按需微调） ----------------
-LOOKBACK_DAYS = 60             # 历史观察窗口
-PUMP_MIN_PCT = 40.0            # 历史"大涨"：近窗口内从低点到高点的涨幅下限（%）
-BASE_DD_MIN = 20.0             # 底部横盘：距窗口高点回撤下限（%）
-BASE_DD_MAX = 60.0             # 底部横盘：距窗口高点回撤上限（%）
-RANGE_5D_MAX = 15.0            # 底部横盘：近 5 天日振幅上限（%）
-SHRINK_RATIO = 0.8             # 底部横盘：近 3 天日均量 / 前期日均量 上限（缩量）
-LOWVOL_GAIN_MIN = 10.0         # 无量上涨：近 3 天累计涨幅下限（%）
-LOWVOL_MAX_DAILY_VOL_USD = 2_000_000.0  # 无量上涨：日均合约成交额上限（USD）
+# 用户 2026-08-07 反馈调整：
+# ①"大涨过" = 历史一波涨过几倍甚至更多（低->高 ≥ +200%，即至少 3 倍）；
+# ② 距高点回撤 ≥ 70%；近一个月（30 天）振幅 ≤ 30%；且**不再考虑量能/缩量**；
+# ③"无量上涨"只看合约日交易量 < $5M（由 $2M 放宽）。
+LOOKBACK_DAYS = 180            # 历史观察窗口（覆盖"历史一波大涨"，半年）
+PUMP_MIN_PCT = 200.0           # 历史"大涨"：窗口内低点->高点涨幅下限（%，几倍以上）
+BASE_DD_MIN = 70.0             # 底部横盘：距窗口高点回撤下限（%，≥70%）
+BASE_DD_MAX = 99.0             # 底部横盘：距窗口高点回撤上限（%，排除近乎归零）
+RANGE_30D_MAX = 30.0           # 底部横盘：近一个月（30 天）振幅上限（%）
+LOWVOL_GAIN_MIN = 0.0            # 无量上涨：近 3 天涨幅下限（用户已放开，>0 即可，仅作佐证）
+LOWVOL_MAX_DAILY_VOL_USD = 5_000_000.0  # 无量上涨：日均合约成交额上限（USD，< $5M，用户指定只看这条）
 
 STABLE_SYMBOLS = {"USDT", "USDC", "FDUSD", "TUSD", "BUSD", "DAI", "EUR", "AEUR",
                   "USDE", "USDY", "RLUSD", "USD1", "XUSD", "FRAX", "SUSD"}
@@ -126,7 +129,7 @@ def resolve_futures_symbol(base: str, futures_map: Dict[str, str]) -> Optional[s
     return None
 
 
-def fetch_daily_klines(symbol: str, limit: int = 90) -> List[Dict[str, Any]]:
+def fetch_daily_klines(symbol: str, limit: int = 210) -> List[Dict[str, Any]]:
     data = _fapi(f"/fapi/v1/klines?symbol={symbol}&interval=1d&limit={limit}", timeout=40)
     if not data:
         return []
@@ -137,7 +140,7 @@ def fetch_daily_klines(symbol: str, limit: int = 90) -> List[Dict[str, Any]]:
     ]
 
 
-def fetch_oi_hist(symbol: str, period: str = "1d", limit: int = 90) -> List[Dict[str, Any]]:
+def fetch_oi_hist(symbol: str, period: str = "1d", limit: int = 180) -> List[Dict[str, Any]]:
     data = _fapi(f"/futures/data/openInterestHist?symbol={symbol}&period={period}&limit={limit}")
     if not data:
         return []
@@ -191,66 +194,67 @@ def classify_accumulation(kl: List[Dict[str, Any]],
         return out
 
     win = kl[-LOOKBACK_DAYS:]
-    lo = min(k["low"] for k in win)
-    hi = max(k["high"] for k in win)
     cur = kl[-1]["close"]
-    peak_ret = _pct(hi, lo)                    # 窗口内低->高最大涨幅
-    dd_from_peak = _pct(cur, hi)               # 距窗口高点回撤（负值）
-    price_from_low = _pct(cur, lo)             # 距窗口低点涨幅
 
-    # 近 5 天振幅
-    last5 = kl[-5:]
-    lo5 = min(k["low"] for k in last5)
-    hi5 = max(k["high"] for k in last5)
-    range_5d = _pct(hi5, lo5)
+    # 历史"一波大涨"：找窗口内最高点 bar 及其**之前**的最低点，计算那一波从低点到高点的涨幅
+    # （不能用"窗口内低->高"，否则会把回撤本身算进去，出现假阳性）
+    hi_idx = max(range(len(win)), key=lambda i: win[i]["high"])
+    hi = win[hi_idx]["high"]
+    pre = win[:hi_idx]
+    lo_pre = min(k["low"] for k in pre) if pre else hi
+    wave_ret = _pct(hi, lo_pre)              # 历史那一波涨幅（几倍以上）
+    dd_from_peak = _pct(cur, hi)             # 距窗口高点回撤（负值）
 
-    # 缩量：近 3 天日均量 vs 更早（窗口内除近 3 天）
-    recent3 = kl[-3:]
-    prev = kl[-LOOKBACK_DAYS:-3]
-    avg_vol_recent3 = _mean(k["vol_usd"] for k in recent3)
-    avg_vol_prev = _mean(k["vol_usd"] for k in prev) if prev else 0.0
-    shrink = avg_vol_recent3 / avg_vol_prev if avg_vol_prev else 0.0
+    lo_all = min(k["low"] for k in win)
+    price_from_low = _pct(cur, lo_all)       # 距窗口最低点涨幅
+
+    # 近一个月（30 天）振幅
+    last30 = kl[-30:]
+    lo30 = min(k["low"] for k in last30)
+    hi30 = max(k["high"] for k in last30)
+    range_30d = _pct(hi30, lo30)
 
     # 近 3 天累计涨幅
     gain_3d = _pct(cur, kl[-4]["close"])
 
+    # 近 3 天日均合约成交额（仅"无量上涨"判定用）
+    recent3 = kl[-3:]
+    avg_vol_recent3 = _mean(k["vol_usd"] for k in recent3)
+
     m = {
-        "peak_ret_60d_pct": round(peak_ret, 1),
+        "wave_ret_90d_pct": round(wave_ret, 1),
         "dd_from_peak_pct": round(dd_from_peak, 1),
         "price_from_low_pct": round(price_from_low, 1),
-        "range_5d_pct": round(range_5d, 1),
-        "vol_shrink_ratio": round(shrink, 2),
+        "range_30d_pct": round(range_30d, 1),
         "avg_daily_vol_usd_3d": round(avg_vol_recent3, 0),
         "gain_3d_pct": round(gain_3d, 1),
         "price": cur,
-        "high_60d": hi,
-        "low_60d": lo,
+        "high_90d": hi,
+        "low_90d": lo_all,
     }
     out["metrics"] = m
 
-    # ---- 判定 1：大涨后底部横盘 ----
+    # ---- 判定 1：大涨后底部横盘（用户新口径，不看量能） ----
     if (
-        peak_ret >= PUMP_MIN_PCT
+        wave_ret >= PUMP_MIN_PCT
         and BASE_DD_MIN <= -dd_from_peak <= BASE_DD_MAX
-        and range_5d <= RANGE_5D_MAX
-        and shrink <= SHRINK_RATIO
+        and range_30d <= RANGE_30D_MAX
     ):
         out["base_accumulated"] = True
         out["status"] = "base_accumulated"
-        out["reason"] = (f"近60天从低点最高涨 {peak_ret:.0f}%，现距高点回撤 "
-                         f"{-dd_from_peak:.0f}%（底部横盘区），近5天振幅 {range_5d:.1f}%，"
-                         f"量能缩至前期 {shrink:.2f}x")
+        out["reason"] = (f"历史一波从低点最高涨 {wave_ret:.0f}%（几倍以上），现距高点回撤 "
+                         f"{-dd_from_peak:.0f}%（≥70%），近一个月振幅 {range_30d:.1f}%（≤30%）")
         out["score"] = 3.0
 
-    # ---- 判定 2：无量上涨 ----
+    # ---- 判定 2：无量上涨（用户口径：只看合约日交易量 < $5M，涨幅>0 佐证） ----
     if (
-        gain_3d >= LOWVOL_GAIN_MIN
-        and avg_vol_recent3 <= LOWVOL_MAX_DAILY_VOL_USD
+        gain_3d > LOWVOL_GAIN_MIN
+        and avg_vol_recent3 < LOWVOL_MAX_DAILY_VOL_USD
     ):
         out["low_volume_pump"] = True
         out["status"] = "low_volume_pump" if out["status"] == "other" else out["status"]
-        reason2 = (f"近3天涨 {gain_3d:.1f}% 但日均合约成交额仅 "
-                   f"${avg_vol_recent3/1e6:.2f}M（无量上涨）")
+        reason2 = (f"合约日均成交额仅 ${avg_vol_recent3/1e6:.2f}M（< $5M，无量）"
+                   f"，近3天涨 {gain_3d:.1f}%")
         if out["status"] == "base_accumulated":
             out["reason"] += "；" + reason2
         else:
@@ -357,15 +361,15 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(json.dumps(results, ensure_ascii=False, indent=2))
         return 0
 
-    print("\n== 小市值「底部横盘 / 无量上涨」扫描结果 ==")
-    print(f"{'状态':<18}{'标的':<10}{'现价':>10}{'60d涨幅':>8}{'回撤%':>8}{'5d振幅':>8}{'缩量x':>8}{'3d涨%':>8}{'3d日均量':>12}{'OI x':>6}{'费率bp':>8}  信号")
+    print("\n== 小市值「大涨后底部横盘 / 无量上涨」扫描结果 ==")
+    print(f"{'状态':<18}{'标的':<10}{'现价':>10}{'一波涨%':>8}{'回撤%':>8}{'30d振幅':>8}{'3d涨%':>8}{'3d日均量':>12}{'OI x':>6}{'费率bp':>8}  信号")
     print("-" * 150)
     for r in results:
         mt = r.get("metrics", {})
         print(
             f"{r.get('status','?'):<18}{r['symbol']:<10}{mt.get('price',0):>10,.6g}"
-            f"{mt.get('peak_ret_60d_pct',0):>8,.0f}{mt.get('dd_from_peak_pct',0):>8,.0f}"
-            f"{mt.get('range_5d_pct',0):>8,.1f}{mt.get('vol_shrink_ratio',0):>8,.2f}"
+            f"{mt.get('wave_ret_90d_pct',0):>8,.0f}{mt.get('dd_from_peak_pct',0):>8,.0f}"
+            f"{mt.get('range_30d_pct',0):>8,.1f}"
             f"{mt.get('gain_3d_pct',0):>8,.1f}{mt.get('avg_daily_vol_usd_3d',0):>12,.0f}"
             f"{mt.get('oi_x_early_to_now',0):>6,.1f}{mt.get('funding_latest_bps',0):>8,.1f}"
             f"  {r.get('reason','')[:70]}"
