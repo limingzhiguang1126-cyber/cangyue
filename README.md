@@ -102,6 +102,40 @@ python -m src.screener.binance_smallcap --top 50 --output data/smallcap_top50.js
   - 仅 Alpha 的币要求 `offline=False`（仍在 Alpha 交易），避免已下架历史残留币
   - 用 tsupply 而非 csupply 估算，避免 BTTC 等小币供应量失真（差 1000 倍）导致市值虚低
 
+### 6. v1.1 实时信号监控 + Telegram 推送（自动化）
+
+在「线 1 候选池」（`data/smallcap_top100_fdv.json`，FDV 最小 Top100）上
+按 **v1.1 标准** 每 15 分钟轮询一次，命中信号即推送 Telegram，
+并标注命中原因 + 观察/建仓建议。
+
+```bash
+# 单次扫描并推送（调试用）
+python -m src.screener.v11_signal_daemon --once
+
+# 只打印不推送（dry-run，不依赖 Telegram token）
+python -m src.screener.v11_signal_daemon --once --dry-run
+
+# 常驻轮询：默认每 15 分钟一次（Ctrl-C 退出）
+python -m src.screener.v11_signal_daemon
+
+# 自定义轮询间隔（分钟）
+python -m src.screener.v11_signal_daemon --interval 15
+```
+
+**v1.1 标准**（2026-08-07 讨论定稿 + 回测修正）：
+
+| 信号线 | 触发条件 | 动作 |
+|---|---|---|
+| 🔔 通知线① | 5m 涨幅 ≥ +10%（收盘口径） | 通知 + 进观察；叠加量能≥3x + OI≥1.15x + 费率正常 → 可小仓 |
+| 🔔 主信号② | 4h 涨幅 ≥ +30% 且距本波高点回撤 < 20% | OI 同步放大≥1.15x → **可建仓**；否则降级观察 |
+| 📡 辅助线③ | 4h 涨幅 3%~10% 且 4h 量能 ≥ 5x | 提前埋伏观察 |
+| ⛔ 一票否决 | 资金费率 > +0.3% 或 < -0.1%（v1.1 放宽上限）/ OI 较峰值回落 > 30% | 命中信号也不碰 |
+
+**去重机制**：同标的 + 同信号线在去重窗口内（默认 2h）只推一次，
+状态持久化到 `data/v11_signal_state.json`，重启不重复轰炸。
+
+**依赖环境变量**：`TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`（见 `.env.example`）。
+
 ## 🧪 运行测试
 
 ```bash
