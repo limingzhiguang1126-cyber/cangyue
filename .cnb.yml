@@ -104,3 +104,17 @@ $:
               git commit -m "chore(screener): 刷新 FDV Top100 候选池 [web-trigger]"
               git push "https://cnb:${CNB_TOKEN}@cnb.cool/${CNB_REPO_SLUG}.git" HEAD:${CNB_BRANCH:-main}
             fi
+
+  web_trigger_test_push:
+    - name: manual-test-push
+      docker:
+        image: python:3.11-slim
+      imports:
+        - https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml
+      stages:
+        - name: install-deps
+          script: pip install -q -r requirements.txt
+        - name: test-push
+          script: |
+            echo "[web_trigger] Telegram 推送链路测试"
+            python scripts/tg_test_push_cloud.py

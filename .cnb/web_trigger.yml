@@ -37,3 +37,7 @@ branch:
         description: "重新抓取币安数据，刷新 data/smallcap_top100_fdv.json 并自动提交"
         event: web_trigger_refresh_pool
         groupName: "🔔 手动触发"
+      - name: "📨 发送测试消息"
+        description: "向你的 Telegram 发一条测试消息，验证推送链路是否打通（同时诊断云端能否访问 api.telegram.org）"
+        event: web_trigger_test_push
+        groupName: "🔔 手动触发"

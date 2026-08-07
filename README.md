@@ -185,6 +185,7 @@ python -m pytest tests/ -v
 |---|---|---|
 | **立即扫描信号** | 手动跑一轮 v1.1 信号扫描，命中即推送 Telegram（默认按钮） | ① 扫描数量：Top 20 / 50 / 100 / 200；② 只扫描不推送（dry-run 调试开关） |
 | **立即刷新候选池** | 重新抓取币安数据，刷新 FDV Top100 候选池并自动提交 | — |
+| **📨 发送测试消息** | 向你的 Telegram 发一条测试消息，验证推送链路是否打通（同时诊断云端能否访问 api.telegram.org） | — |
 
 - 配置：`.cnb/web_trigger.yml`（按钮定义）+ `.cnb.yml` 的 `$` 兜底分支下 `web_trigger_*` 流水线
 - 权限：有仓库写权限即可点击；如需限制可在 `web_trigger.yml` 的 `permissions` 中指定用户/角色
@@ -225,3 +226,52 @@ TELEGRAM_BOT_TOKEN= TELEGRAM_CHAT_ID= python scripts/v11_cloud_run.py --top 10
 ## 🔗 相关链接
 
 - 需求 Issue：[qiang26/cangyue#1](https://cnb.cool/qiang26/cangyue/-/issues/1)
+
+## ⚠️ 电报推送网络问题（重要）
+
+> **CNB 云原生构建机位于国内网络，直连 `api.telegram.org` 大概率超时（被墙）**，
+> 因此云端定时任务虽然扫描正常，但推送 Telegram 可能失败。这是网络环境限制，不是代码问题。
+
+### 如何确认能否收到推送
+
+在**你自己的电脑/服务器**（能访问 Telegram 的网络，或已开代理）上运行一键测试：
+
+```bash
+# 方式一：配好 .env 后直接跑
+python scripts/tg_test_push.py
+
+# 方式二：环境变量直接传参（不写文件）
+TELEGRAM_BOT_TOKEN=123456:ABC... TELEGRAM_CHAT_ID=654321 python scripts/tg_test_push.py
+
+# 方式三：参数指定
+python scripts/tg_test_push.py --token 123456:ABC... --chat 654321
+```
+
+- 看到 `✓ 测试消息发送成功！` 且 Telegram 收到消息 → **Token / chat_id / 推送链路全部正常**
+- 若报 `无法访问 api.telegram.org` → 当前网络连不上 Telegram，需开代理或用海外代理地址
+
+### 云端（CNB）如何打通推送
+
+由于 CNB 构建机无法直连 `api.telegram.org`，需要**让 Telegram API 走一条国内可达的通道**：
+
+**方案 A：海外 Telegram Bot API 代理（推荐，改动最小）**
+
+1. 在能访问 Telegram 的海外服务器/免费 PaaS（如 Render/Railway/Fly）上部署一个 Telegram Bot API 代理
+2. 在密钥仓库 `telegram.yml` 里加一行：
+   ```yaml
+   TELEGRAM_API_BASE: "https://你的代理域名"
+   ```
+3. 云端定时任务会自动读取该变量，推送走代理到达 Telegram
+
+> 仓库代码已支持 `TELEGRAM_API_BASE`（见 `src/notifier/telegram_notifier.py`），
+> 一键测试脚本 `scripts/tg_test_push_cloud.py` 也会优先用它。
+
+**方案 B：海外自托管 Runner**
+
+将 CNB 构建任务调度到一台能访问 Telegram 的海外自托管构建机上执行（见 CNB 文档「自定义构建机」），
+直连 `api.telegram.org` 即可。
+
+**方案 C：本地常驻守护进程**
+
+在自己能访问 Telegram 的电脑/服务器上常驻运行 `v11_signal_daemon`（每 15 分钟轮询 + 推送），
+不依赖 CNB 云端网络。

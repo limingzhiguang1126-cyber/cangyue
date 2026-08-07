@@ -18,16 +18,25 @@ from ..utils.logger import setup_logging
 setup_logging()
 logger = logging.getLogger("fin-alert.notifier")
 
-_TG_API = "https://api.telegram.org/bot{token}/{method}"
+
+def _default_api_base() -> str:
+    """API 地址：默认官方 api.telegram.org，可用 TELEGRAM_API_BASE 覆盖为海外代理。"""
+    import os
+    return os.getenv("TELEGRAM_API_BASE", "https://api.telegram.org").rstrip("/")
 
 
 class TelegramNotifier:
     """基于 Telegram Bot API 的推送器。"""
 
-    def __init__(self, bot_token: str, chat_id: str, timeout: int = 15):
+    def __init__(self, bot_token: str, chat_id: str, timeout: int = 15,
+                 api_base: str | None = None):
         self.bot_token = bot_token
         self.chat_id = chat_id
         self.timeout = timeout
+        self.api_base = (api_base or _default_api_base()).rstrip("/")
+
+    def _api_url(self, method: str) -> str:
+        return f"{self.api_base}/bot{self.bot_token}/{method}"
 
     # ------------------------------------------------------------------
     # 基础发送
@@ -37,7 +46,7 @@ class TelegramNotifier:
         if not self.bot_token or not self.chat_id:
             logger.warning("telegram not configured, skip send")
             return False
-        url = _TG_API.format(token=self.bot_token, method="sendMessage")
+        url = self._api_url("sendMessage")
         payload = {
             "chat_id": self.chat_id,
             "text": text,

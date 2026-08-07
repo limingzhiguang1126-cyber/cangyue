@@ -74,3 +74,20 @@ def test_format_daily_report():
 def test_telegram_escape():
     notifier = TelegramNotifier(bot_token="t", chat_id="c")
     assert notifier._esc("<b>&") == "&lt;b&gt;&amp;"
+
+
+def test_api_base_default(monkeypatch):
+    monkeypatch.delenv("TELEGRAM_API_BASE", raising=False)
+    n = TelegramNotifier(bot_token="t", chat_id="c")
+    assert n._api_url("getMe") == "https://api.telegram.org/bott/getMe"
+
+
+def test_api_base_override(monkeypatch):
+    monkeypatch.setenv("TELEGRAM_API_BASE", "https://tg.example.com/")
+    n = TelegramNotifier(bot_token="t", chat_id="c")
+    assert n._api_url("sendMessage") == "https://tg.example.com/bott/sendMessage"
+
+
+def test_api_base_explicit_arg():
+    n = TelegramNotifier(bot_token="t", chat_id="c", api_base="https://proxy.example.com")
+    assert n._api_url("sendMessage") == "https://proxy.example.com/bott/sendMessage"
