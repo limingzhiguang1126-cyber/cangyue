@@ -193,10 +193,10 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     notifier = None
     if args.dry_run:
-        logger.info("dry-run mode: 只打印不推送")
+        logger.info("dry-run 模式（你加了 --dry-run）：命中信号只会打印，不会真的发到 Telegram；去掉 --dry-run 才会真实推送")
     elif tg_token and tg_chat:
         notifier = TelegramNotifier(bot_token=tg_token, chat_id=tg_chat)
-        logger.info("telegram notifier ready")
+        logger.info("telegram notifier ready（已读到 TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID，命中即推送到你的 Telegram）")
     else:
         logger.warning("TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID 未配置，将仅打印命中（不推送）")
         notifier = None
