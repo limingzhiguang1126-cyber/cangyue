@@ -1,0 +1,2510 @@
+[
+  {
+    "symbol": "ACE",
+    "futures_symbol": "ACEUSDT",
+    "data_source": "spot",
+    "price": 0.1373,
+    "momentum": {
+      "m5_1": 6.27,
+      "m5_3": 12.26,
+      "m15_1": 12.54,
+      "m15_2": 10.55,
+      "drawdown_24h_pct": -0.79,
+      "prelaunch_range_pct": 3.41
+    },
+    "volume": {
+      "vol_ratio_5m": 13.1,
+      "vol_ratio_last_bar": 13.95,
+      "vol_ratio_24h_vs_7d": 5.6,
+      "vol_24h_usd": 10442230.0,
+      "vol_prev_daily_avg_usd": 1865029.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.58,
+      "oi_now_usd": 7897701.0,
+      "oi_peak_usd": 7897701.0,
+      "oi_drawdown_from_peak_pct": 0.0
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.02,
+      "latest": 1.005
+    },
+    "long_short": {
+      "ratio_avg_1h": 0.897,
+      "latest": 0.965
+    },
+    "funding": {
+      "avg_bps": -9.41,
+      "latest_bps": -43.79,
+      "premium_bps": -47.8531
+    },
+    "score": 13.5,
+    "notes": [
+      "5m +6.3% 动量健康",
+      "5m 量能 13.1x 放大",
+      "24h 量比 5.6x",
+      "OI 放大 1.6x",
+      "主动买 1.02",
+      "大户多空比 0.90 偏空",
+      "费率 -43.79bp 异常"
+    ],
+    "status": "launching",
+    "reason": "量价齐升 + 持仓放大，符合启动初期特征"
+  },
+  {
+    "symbol": "GRIFFAIN",
+    "futures_symbol": "GRIFFAINUSDT",
+    "data_source": "futures",
+    "price": 0.009936,
+    "momentum": {
+      "m5_1": 0.53,
+      "m5_3": 2.11,
+      "m15_1": 1.55,
+      "m15_2": 2.05,
+      "drawdown_24h_pct": -1.34,
+      "prelaunch_range_pct": 0.95
+    },
+    "volume": {
+      "vol_ratio_5m": 4.24,
+      "vol_ratio_last_bar": 2.42,
+      "vol_ratio_24h_vs_7d": 1.73,
+      "vol_24h_usd": 1949980.0,
+      "vol_prev_daily_avg_usd": 1129744.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.16,
+      "oi_now_usd": 2274259.0,
+      "oi_peak_usd": 2274259.0,
+      "oi_drawdown_from_peak_pct": 0.0
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.528,
+      "latest": 2.695
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.466,
+      "latest": 2.399
+    },
+    "funding": {
+      "avg_bps": 1.23,
+      "latest_bps": 3.34,
+      "premium_bps": 3.5535
+    },
+    "score": 9.0,
+    "notes": [
+      "5m +0.5% 未达启动线",
+      "5m 量能 4.2x 放大",
+      "24h 量比 1.7x",
+      "OI 放大 1.2x",
+      "主动买 1.53"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "C98",
+    "futures_symbol": "C98USDT",
+    "data_source": "spot",
+    "price": 0.01349,
+    "momentum": {
+      "m5_1": 0.15,
+      "m5_3": 0.45,
+      "m15_1": 0.67,
+      "m15_2": 0.6,
+      "drawdown_24h_pct": -1.03,
+      "prelaunch_range_pct": 0.72
+    },
+    "volume": {
+      "vol_ratio_5m": 2.08,
+      "vol_ratio_last_bar": 0.1,
+      "vol_ratio_24h_vs_7d": 1.55,
+      "vol_24h_usd": 310266.0,
+      "vol_prev_daily_avg_usd": 200152.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.23,
+      "oi_now_usd": 1169674.0,
+      "oi_peak_usd": 1194706.0,
+      "oi_drawdown_from_peak_pct": -2.1
+    },
+    "taker": {
+      "buy_sell_avg_1h": 2.247,
+      "latest": 7.215
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.623,
+      "latest": 2.639
+    },
+    "funding": {
+      "avg_bps": 0.62,
+      "latest_bps": 1.0,
+      "premium_bps": 1.0
+    },
+    "score": 8.0,
+    "notes": [
+      "5m +0.1% 未达启动线",
+      "5m 量能 2.1x 放大",
+      "24h 量比 1.6x",
+      "OI 放大 1.2x",
+      "主动买 2.25"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "BEL",
+    "futures_symbol": "BELUSDT",
+    "data_source": "spot",
+    "price": 0.1006,
+    "momentum": {
+      "m5_1": 0.1,
+      "m5_3": 0.2,
+      "m15_1": 0.1,
+      "m15_2": 0.3,
+      "drawdown_24h_pct": -2.14,
+      "prelaunch_range_pct": 0.51
+    },
+    "volume": {
+      "vol_ratio_5m": 3.54,
+      "vol_ratio_last_bar": 0.08,
+      "vol_ratio_24h_vs_7d": 1.52,
+      "vol_24h_usd": 394525.0,
+      "vol_prev_daily_avg_usd": 259373.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.95,
+      "oi_now_usd": 1412552.0,
+      "oi_peak_usd": 1498162.0,
+      "oi_drawdown_from_peak_pct": -5.71
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.146,
+      "latest": 1.224
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.48,
+      "latest": 2.506
+    },
+    "funding": {
+      "avg_bps": -4.01,
+      "latest_bps": 1.0,
+      "premium_bps": 1.0
+    },
+    "score": 7.0,
+    "notes": [
+      "5m +0.1% 未达启动线",
+      "5m 量能 3.5x 放大",
+      "24h 量比 1.5x",
+      "OI 0.9x 未跟",
+      "主动买 1.15"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "ALICE",
+    "futures_symbol": "ALICEUSDT",
+    "data_source": "spot",
+    "price": 0.1242,
+    "momentum": {
+      "m5_1": -0.64,
+      "m5_3": 0.16,
+      "m15_1": -1.35,
+      "m15_2": 0.81,
+      "drawdown_24h_pct": -1.35,
+      "prelaunch_range_pct": 1.13
+    },
+    "volume": {
+      "vol_ratio_5m": 13.48,
+      "vol_ratio_last_bar": 13.16,
+      "vol_ratio_24h_vs_7d": 3.08,
+      "vol_24h_usd": 998016.0,
+      "vol_prev_daily_avg_usd": 323519.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.08,
+      "oi_now_usd": 1974396.0,
+      "oi_peak_usd": 1981035.0,
+      "oi_drawdown_from_peak_pct": -0.34
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.132,
+      "latest": 0.535
+    },
+    "long_short": {
+      "ratio_avg_1h": 1.583,
+      "latest": 1.57
+    },
+    "funding": {
+      "avg_bps": -0.89,
+      "latest_bps": -2.0,
+      "premium_bps": -2.5755
+    },
+    "score": 7.0,
+    "notes": [
+      "5m +-0.6% 未达启动线",
+      "5m 量能 13.5x 放大",
+      "24h 量比 3.1x",
+      "OI 1.1x 未跟",
+      "主动买 1.13"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "USUAL",
+    "futures_symbol": "USUALUSDT",
+    "data_source": "spot",
+    "price": 0.00877,
+    "momentum": {
+      "m5_1": 1.39,
+      "m5_3": 3.42,
+      "m15_1": 3.54,
+      "m15_2": 3.06,
+      "drawdown_24h_pct": -1.9,
+      "prelaunch_range_pct": 1.12
+    },
+    "volume": {
+      "vol_ratio_5m": 8.87,
+      "vol_ratio_last_bar": 9.83,
+      "vol_ratio_24h_vs_7d": 4.45,
+      "vol_24h_usd": 1189659.0,
+      "vol_prev_daily_avg_usd": 267421.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.01,
+      "oi_now_usd": 1339924.0,
+      "oi_peak_usd": 1377186.0,
+      "oi_drawdown_from_peak_pct": -2.71
+    },
+    "taker": {
+      "buy_sell_avg_1h": 0.774,
+      "latest": 2.321
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.171,
+      "latest": 3.11
+    },
+    "funding": {
+      "avg_bps": 0.2,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 7.0,
+    "notes": [
+      "5m +1.4% 未达启动线",
+      "5m 量能 8.9x 放大",
+      "24h 量比 4.4x",
+      "OI 1.0x 未跟",
+      "主动买 0.77 弱"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "XAI",
+    "futures_symbol": "XAIUSDT",
+    "data_source": "spot",
+    "price": 0.00674,
+    "momentum": {
+      "m5_1": 1.05,
+      "m5_3": 2.12,
+      "m15_1": 1.51,
+      "m15_2": 2.12,
+      "drawdown_24h_pct": 0.0,
+      "prelaunch_range_pct": 0.65
+    },
+    "volume": {
+      "vol_ratio_5m": 9.82,
+      "vol_ratio_last_bar": 5.85,
+      "vol_ratio_24h_vs_7d": 1.63,
+      "vol_24h_usd": 331366.0,
+      "vol_prev_daily_avg_usd": 203600.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.11,
+      "oi_now_usd": 1179364.0,
+      "oi_peak_usd": 1179364.0,
+      "oi_drawdown_from_peak_pct": 0.0
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.068,
+      "latest": 0.596
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.648,
+      "latest": 3.558
+    },
+    "funding": {
+      "avg_bps": 0.18,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 6.5,
+    "notes": [
+      "5m +1.0% 未达启动线",
+      "5m 量能 9.8x 放大",
+      "24h 量比 1.6x",
+      "OI 1.1x 未跟",
+      "主动买 1.07"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "MOVR",
+    "futures_symbol": "MOVRUSDT",
+    "data_source": "spot",
+    "price": 1.206,
+    "momentum": {
+      "m5_1": -0.25,
+      "m5_3": -0.33,
+      "m15_1": -0.17,
+      "m15_2": -0.17,
+      "drawdown_24h_pct": -4.36,
+      "prelaunch_range_pct": 0.35
+    },
+    "volume": {
+      "vol_ratio_5m": 1.48,
+      "vol_ratio_last_bar": 0.7,
+      "vol_ratio_24h_vs_7d": 5.02,
+      "vol_24h_usd": 744087.0,
+      "vol_prev_daily_avg_usd": 148365.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.17,
+      "oi_now_usd": 1305164.0,
+      "oi_peak_usd": 1375446.0,
+      "oi_drawdown_from_peak_pct": -5.11
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.567,
+      "latest": 1.329
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.945,
+      "latest": 2.949
+    },
+    "funding": {
+      "avg_bps": 0.35,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 6.0,
+    "notes": [
+      "5m +-0.2% 未达启动线",
+      "5m 量能 1.5x 不足",
+      "24h 量比 5.0x",
+      "OI 放大 1.2x",
+      "主动买 1.57"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "THE",
+    "futures_symbol": "THEUSDT",
+    "data_source": "spot",
+    "price": 0.0544,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": -0.73,
+      "m15_1": -0.73,
+      "m15_2": -0.37,
+      "drawdown_24h_pct": -1.09,
+      "prelaunch_range_pct": 1.15
+    },
+    "volume": {
+      "vol_ratio_5m": 2.1,
+      "vol_ratio_last_bar": 1.4,
+      "vol_ratio_24h_vs_7d": 1.68,
+      "vol_24h_usd": 461500.0,
+      "vol_prev_daily_avg_usd": 275379.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.03,
+      "oi_now_usd": 1757684.0,
+      "oi_peak_usd": 1798327.0,
+      "oi_drawdown_from_peak_pct": -2.26
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.481,
+      "latest": 0.682
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.297,
+      "latest": 3.331
+    },
+    "funding": {
+      "avg_bps": 0.33,
+      "latest_bps": 2.06,
+      "premium_bps": 2.2500999999999998
+    },
+    "score": 6.0,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 2.1x 放大",
+      "24h 量比 1.7x",
+      "OI 1.0x 未跟",
+      "主动买 1.48"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "AGLD",
+    "futures_symbol": "AGLDUSDT",
+    "data_source": "spot",
+    "price": 0.1552,
+    "momentum": {
+      "m5_1": -0.06,
+      "m5_3": 0.06,
+      "m15_1": 0.13,
+      "m15_2": 0.19,
+      "drawdown_24h_pct": -0.58,
+      "prelaunch_range_pct": 0.81
+    },
+    "volume": {
+      "vol_ratio_5m": 5.26,
+      "vol_ratio_last_bar": 7.03,
+      "vol_ratio_24h_vs_7d": 0.79,
+      "vol_24h_usd": 218686.0,
+      "vol_prev_daily_avg_usd": 277315.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.01,
+      "oi_now_usd": 1471394.0,
+      "oi_peak_usd": 1482500.0,
+      "oi_drawdown_from_peak_pct": -0.75
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.497,
+      "latest": 4.563
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.034,
+      "latest": 2.032
+    },
+    "funding": {
+      "avg_bps": -2.92,
+      "latest_bps": 1.0,
+      "premium_bps": 1.0
+    },
+    "score": 5.5,
+    "notes": [
+      "5m +-0.1% 未达启动线",
+      "5m 量能 5.3x 放大",
+      "24h 量比 0.8x 不足",
+      "OI 1.0x 未跟",
+      "主动买 1.50"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "DYM",
+    "futures_symbol": "DYMUSDT",
+    "data_source": "spot",
+    "price": 0.01373,
+    "momentum": {
+      "m5_1": 0.15,
+      "m5_3": 0.22,
+      "m15_1": 0.37,
+      "m15_2": -0.15,
+      "drawdown_24h_pct": -0.79,
+      "prelaunch_range_pct": 0.59
+    },
+    "volume": {
+      "vol_ratio_5m": 3.88,
+      "vol_ratio_last_bar": 3.27,
+      "vol_ratio_24h_vs_7d": 0.97,
+      "vol_24h_usd": 190808.0,
+      "vol_prev_daily_avg_usd": 197222.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.03,
+      "oi_now_usd": 1450737.0,
+      "oi_peak_usd": 1460922.0,
+      "oi_drawdown_from_peak_pct": -0.7
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.381,
+      "latest": 2.389
+    },
+    "long_short": {
+      "ratio_avg_1h": 4.437,
+      "latest": 4.479
+    },
+    "funding": {
+      "avg_bps": 0.42,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 5.5,
+    "notes": [
+      "5m +0.1% 未达启动线",
+      "5m 量能 3.9x 放大",
+      "24h 量比 1.0x 不足",
+      "OI 1.0x 未跟",
+      "主动买 1.38"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "COOKIE",
+    "futures_symbol": "COOKIEUSDT",
+    "data_source": "spot",
+    "price": 0.0104,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": 1.96,
+      "m15_1": 0.0,
+      "m15_2": 1.96,
+      "drawdown_24h_pct": -5.45,
+      "prelaunch_range_pct": 2.44
+    },
+    "volume": {
+      "vol_ratio_5m": 1.8,
+      "vol_ratio_last_bar": 1.05,
+      "vol_ratio_24h_vs_7d": 8.14,
+      "vol_24h_usd": 1869559.0,
+      "vol_prev_daily_avg_usd": 229538.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.38,
+      "oi_now_usd": 1824732.0,
+      "oi_peak_usd": 2058266.0,
+      "oi_drawdown_from_peak_pct": -11.35
+    },
+    "taker": {
+      "buy_sell_avg_1h": 0.87,
+      "latest": 1.012
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.305,
+      "latest": 3.174
+    },
+    "funding": {
+      "avg_bps": 1.45,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 4.0,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 1.8x 不足",
+      "24h 量比 8.1x",
+      "OI 放大 1.4x",
+      "主动买 0.87 弱"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "TST",
+    "futures_symbol": "TSTUSDT",
+    "data_source": "spot",
+    "price": 0.01069,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": 0.75,
+      "m15_1": 0.47,
+      "m15_2": 0.38,
+      "drawdown_24h_pct": -4.21,
+      "prelaunch_range_pct": 2.18
+    },
+    "volume": {
+      "vol_ratio_5m": 0.59,
+      "vol_ratio_last_bar": 0.04,
+      "vol_ratio_24h_vs_7d": 1.67,
+      "vol_24h_usd": 1644340.0,
+      "vol_prev_daily_avg_usd": 985787.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.99,
+      "oi_now_usd": 2760341.0,
+      "oi_peak_usd": 2989295.0,
+      "oi_drawdown_from_peak_pct": -7.66
+    },
+    "taker": {
+      "buy_sell_avg_1h": 3.516,
+      "latest": 3.881
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.177,
+      "latest": 3.188
+    },
+    "funding": {
+      "avg_bps": -0.57,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 4.0,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 0.6x 不足",
+      "24h 量比 1.7x",
+      "OI 1.0x 未跟",
+      "主动买 3.52"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "RARE",
+    "futures_symbol": "RAREUSDT",
+    "data_source": "spot",
+    "price": 0.01222,
+    "momentum": {
+      "m5_1": 0.25,
+      "m5_3": -0.16,
+      "m15_1": 0.08,
+      "m15_2": -0.16,
+      "drawdown_24h_pct": -3.02,
+      "prelaunch_range_pct": 0.59
+    },
+    "volume": {
+      "vol_ratio_5m": 0.48,
+      "vol_ratio_last_bar": 0.35,
+      "vol_ratio_24h_vs_7d": 1.55,
+      "vol_24h_usd": 287419.0,
+      "vol_prev_daily_avg_usd": 184838.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.03,
+      "oi_now_usd": 1173525.0,
+      "oi_peak_usd": 1231727.0,
+      "oi_drawdown_from_peak_pct": -4.73
+    },
+    "taker": {
+      "buy_sell_avg_1h": 2.008,
+      "latest": 1.163
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.189,
+      "latest": 3.221
+    },
+    "funding": {
+      "avg_bps": 0.32,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 4.0,
+    "notes": [
+      "5m +0.2% 未达启动线",
+      "5m 量能 0.5x 不足",
+      "24h 量比 1.6x",
+      "OI 1.0x 未跟",
+      "主动买 2.01"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "SAGA",
+    "futures_symbol": "SAGAUSDT",
+    "data_source": "spot",
+    "price": 0.01359,
+    "momentum": {
+      "m5_1": 0.52,
+      "m5_3": 0.37,
+      "m15_1": 0.44,
+      "m15_2": 0.67,
+      "drawdown_24h_pct": -1.31,
+      "prelaunch_range_pct": 1.34
+    },
+    "volume": {
+      "vol_ratio_5m": 2.06,
+      "vol_ratio_last_bar": 4.91,
+      "vol_ratio_24h_vs_7d": 0.66,
+      "vol_24h_usd": 618815.0,
+      "vol_prev_daily_avg_usd": 930781.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.01,
+      "oi_now_usd": 3326540.0,
+      "oi_peak_usd": 3390452.0,
+      "oi_drawdown_from_peak_pct": -1.89
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.071,
+      "latest": 0.247
+    },
+    "long_short": {
+      "ratio_avg_1h": 5.229,
+      "latest": 5.242
+    },
+    "funding": {
+      "avg_bps": 0.48,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 4.0,
+    "notes": [
+      "5m +0.5% 未达启动线",
+      "5m 量能 2.1x 放大",
+      "24h 量比 0.7x 不足",
+      "OI 1.0x 未跟",
+      "主动买 1.07"
+    ],
+    "status": "watch",
+    "reason": "有量能但需确认，放入观察"
+  },
+  {
+    "symbol": "MAGIC",
+    "futures_symbol": "MAGICUSDT",
+    "data_source": "spot",
+    "price": 0.042,
+    "momentum": {
+      "m5_1": 0.48,
+      "m5_3": 0.48,
+      "m15_1": 0.48,
+      "m15_2": 0.24,
+      "drawdown_24h_pct": 0.0,
+      "prelaunch_range_pct": 0.25
+    },
+    "volume": {
+      "vol_ratio_5m": 4.36,
+      "vol_ratio_last_bar": 1.2,
+      "vol_ratio_24h_vs_7d": 1.0,
+      "vol_24h_usd": 132875.0,
+      "vol_prev_daily_avg_usd": 132855.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.04,
+      "oi_now_usd": 1285462.0,
+      "oi_peak_usd": 1285462.0,
+      "oi_drawdown_from_peak_pct": 0.0
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.013,
+      "latest": 1.319
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.739,
+      "latest": 2.741
+    },
+    "funding": {
+      "avg_bps": 0.35,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 3.5,
+    "notes": [
+      "5m +0.5% 未达启动线",
+      "5m 量能 4.4x 放大",
+      "24h 量比 1.0x 不足",
+      "OI 1.0x 未跟",
+      "主动买 1.01 弱"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "FLUX",
+    "futures_symbol": "FLUXUSDT",
+    "data_source": "spot",
+    "price": 0.0402,
+    "momentum": {
+      "m5_1": 0.25,
+      "m5_3": 0.25,
+      "m15_1": 0.25,
+      "m15_2": -0.25,
+      "drawdown_24h_pct": -1.23,
+      "prelaunch_range_pct": 0.76
+    },
+    "volume": {
+      "vol_ratio_5m": 5.98,
+      "vol_ratio_last_bar": 14.38,
+      "vol_ratio_24h_vs_7d": 0.71,
+      "vol_24h_usd": 63343.0,
+      "vol_prev_daily_avg_usd": 89405.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.03,
+      "oi_now_usd": 968561.0,
+      "oi_peak_usd": 985934.0,
+      "oi_drawdown_from_peak_pct": -1.76
+    },
+    "taker": {
+      "buy_sell_avg_1h": 0.51,
+      "latest": 0.363
+    },
+    "long_short": {
+      "ratio_avg_1h": 4.306,
+      "latest": 4.353
+    },
+    "funding": {
+      "avg_bps": 0.33,
+      "latest_bps": -0.25,
+      "premium_bps": -0.2475
+    },
+    "score": 3.5,
+    "notes": [
+      "5m +0.2% 未达启动线",
+      "5m 量能 6.0x 放大",
+      "24h 量比 0.7x 不足",
+      "OI 1.0x 未跟",
+      "主动买 0.51 弱"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "SWARMS",
+    "futures_symbol": "SWARMSUSDT",
+    "data_source": "futures",
+    "price": 0.007171,
+    "momentum": {
+      "m5_1": 0.01,
+      "m5_3": -0.01,
+      "m15_1": 0.0,
+      "m15_2": -0.24,
+      "drawdown_24h_pct": -1.14,
+      "prelaunch_range_pct": 0.87
+    },
+    "volume": {
+      "vol_ratio_5m": 0.67,
+      "vol_ratio_last_bar": 0.17,
+      "vol_ratio_24h_vs_7d": 0.64,
+      "vol_24h_usd": 919742.0,
+      "vol_prev_daily_avg_usd": 1447001.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.03,
+      "oi_now_usd": 2865204.0,
+      "oi_peak_usd": 2880702.0,
+      "oi_drawdown_from_peak_pct": -0.54
+    },
+    "taker": {
+      "buy_sell_avg_1h": 4.639,
+      "latest": 0.973
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.731,
+      "latest": 2.743
+    },
+    "funding": {
+      "avg_bps": 1.61,
+      "latest_bps": 4.82,
+      "premium_bps": 4.4430000000000005
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 0.7x 不足",
+      "24h 量比 0.6x 不足",
+      "OI 1.0x 未跟",
+      "主动买 4.64"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "AVAAI",
+    "futures_symbol": "AVAAIUSDT",
+    "data_source": "futures",
+    "price": 0.008445,
+    "momentum": {
+      "m5_1": -0.27,
+      "m5_3": -0.47,
+      "m15_1": -0.14,
+      "m15_2": -0.15,
+      "drawdown_24h_pct": -10.13,
+      "prelaunch_range_pct": 0.96
+    },
+    "volume": {
+      "vol_ratio_5m": 0.22,
+      "vol_ratio_last_bar": 0.24,
+      "vol_ratio_24h_vs_7d": 1.14,
+      "vol_24h_usd": 2116709.0,
+      "vol_prev_daily_avg_usd": 1854721.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.0,
+      "oi_now_usd": 2653666.0,
+      "oi_peak_usd": 2863534.0,
+      "oi_drawdown_from_peak_pct": -7.33
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.804,
+      "latest": 0.912
+    },
+    "long_short": {
+      "ratio_avg_1h": 1.799,
+      "latest": 1.776
+    },
+    "funding": {
+      "avg_bps": 1.58,
+      "latest_bps": 3.48,
+      "premium_bps": 3.1473999999999998
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +-0.3% 未达启动线",
+      "5m 量能 0.2x 不足",
+      "24h 量比 1.1x 不足",
+      "OI 1.0x 未跟",
+      "主动买 1.80"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "GTC",
+    "futures_symbol": "GTCUSDT",
+    "data_source": "spot",
+    "price": 0.08348,
+    "momentum": {
+      "m5_1": 0.22,
+      "m5_3": -0.37,
+      "m15_1": -0.33,
+      "m15_2": -0.47,
+      "drawdown_24h_pct": -5.99,
+      "prelaunch_range_pct": 1.19
+    },
+    "volume": {
+      "vol_ratio_5m": 0.98,
+      "vol_ratio_last_bar": 0.73,
+      "vol_ratio_24h_vs_7d": 1.42,
+      "vol_24h_usd": 418529.0,
+      "vol_prev_daily_avg_usd": 294643.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.18,
+      "oi_now_usd": 1434611.0,
+      "oi_peak_usd": 1545733.0,
+      "oi_drawdown_from_peak_pct": -7.19
+    },
+    "taker": {
+      "buy_sell_avg_1h": 0.786,
+      "latest": 1.068
+    },
+    "long_short": {
+      "ratio_avg_1h": 4.659,
+      "latest": 4.698
+    },
+    "funding": {
+      "avg_bps": 1.18,
+      "latest_bps": 1.0,
+      "premium_bps": 1.0
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.2% 未达启动线",
+      "5m 量能 1.0x 不足",
+      "24h 量比 1.4x 不足",
+      "OI 放大 1.2x",
+      "主动买 0.79 弱"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "ASR",
+    "futures_symbol": "ASRUSDT",
+    "data_source": "spot",
+    "price": 0.86,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": -0.12,
+      "m15_1": -0.12,
+      "m15_2": -0.12,
+      "drawdown_24h_pct": -0.81,
+      "prelaunch_range_pct": 0.58
+    },
+    "volume": {
+      "vol_ratio_5m": 0.17,
+      "vol_ratio_last_bar": 0.0,
+      "vol_ratio_24h_vs_7d": 0.7,
+      "vol_24h_usd": 90402.0,
+      "vol_prev_daily_avg_usd": 129527.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.01,
+      "oi_now_usd": 1387463.0,
+      "oi_peak_usd": 1388946.0,
+      "oi_drawdown_from_peak_pct": -0.11
+    },
+    "taker": {
+      "buy_sell_avg_1h": 12.646,
+      "latest": 6.526
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.765,
+      "latest": 3.766
+    },
+    "funding": {
+      "avg_bps": 0.5,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 0.2x 不足",
+      "24h 量比 0.7x 不足",
+      "OI 1.0x 未跟",
+      "主动买 12.65"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "PUMPBTC",
+    "futures_symbol": "PUMPBTCUSDT",
+    "data_source": "futures",
+    "price": 0.01042,
+    "momentum": {
+      "m5_1": -0.1,
+      "m5_3": 0.68,
+      "m15_1": 0.38,
+      "m15_2": -0.1,
+      "drawdown_24h_pct": -1.33,
+      "prelaunch_range_pct": 1.19
+    },
+    "volume": {
+      "vol_ratio_5m": 1.67,
+      "vol_ratio_last_bar": 0.79,
+      "vol_ratio_24h_vs_7d": 0.7,
+      "vol_24h_usd": 526346.0,
+      "vol_prev_daily_avg_usd": 755157.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.05,
+      "oi_now_usd": 1759799.0,
+      "oi_peak_usd": 1772113.0,
+      "oi_drawdown_from_peak_pct": -0.69
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.866,
+      "latest": 4.016
+    },
+    "long_short": {
+      "ratio_avg_1h": 5.551,
+      "latest": 5.523
+    },
+    "funding": {
+      "avg_bps": 2.32,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +-0.1% 未达启动线",
+      "5m 量能 1.7x 不足",
+      "24h 量比 0.7x 不足",
+      "OI 1.1x 未跟",
+      "主动买 1.87"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "4",
+    "futures_symbol": "4USDT",
+    "data_source": "futures",
+    "price": 0.010854,
+    "momentum": {
+      "m5_1": -0.07,
+      "m5_3": -0.06,
+      "m15_1": 0.3,
+      "m15_2": -0.69,
+      "drawdown_24h_pct": -6.34,
+      "prelaunch_range_pct": 6.07
+    },
+    "volume": {
+      "vol_ratio_5m": 0.42,
+      "vol_ratio_last_bar": 0.33,
+      "vol_ratio_24h_vs_7d": 1.33,
+      "vol_24h_usd": 6187932.0,
+      "vol_prev_daily_avg_usd": 4635938.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.02,
+      "oi_now_usd": 4012017.0,
+      "oi_peak_usd": 4367825.0,
+      "oi_drawdown_from_peak_pct": -8.15
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.476,
+      "latest": 1.153
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.027,
+      "latest": 2.056
+    },
+    "funding": {
+      "avg_bps": 1.24,
+      "latest_bps": 7.13,
+      "premium_bps": 7.2277
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +-0.1% 未达启动线",
+      "5m 量能 0.4x 不足",
+      "24h 量比 1.3x 不足",
+      "OI 1.0x 未跟",
+      "主动买 1.48"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "CHR",
+    "futures_symbol": "CHRUSDT",
+    "data_source": "spot",
+    "price": 0.01332,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": -0.15,
+      "m15_1": 0.15,
+      "m15_2": 0.08,
+      "drawdown_24h_pct": -4.17,
+      "prelaunch_range_pct": 0.55
+    },
+    "volume": {
+      "vol_ratio_5m": 0.6,
+      "vol_ratio_last_bar": 0.0,
+      "vol_ratio_24h_vs_7d": 1.48,
+      "vol_24h_usd": 232782.0,
+      "vol_prev_daily_avg_usd": 157297.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.03,
+      "oi_now_usd": 1071448.0,
+      "oi_peak_usd": 1173708.0,
+      "oi_drawdown_from_peak_pct": -8.71
+    },
+    "taker": {
+      "buy_sell_avg_1h": 2.443,
+      "latest": 7.742
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.416,
+      "latest": 2.424
+    },
+    "funding": {
+      "avg_bps": 0.61,
+      "latest_bps": 1.0,
+      "premium_bps": 1.0
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 0.6x 不足",
+      "24h 量比 1.5x 不足",
+      "OI 1.0x 未跟",
+      "主动买 2.44"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "JOE",
+    "futures_symbol": "JOEUSDT",
+    "data_source": "spot",
+    "price": 0.0253,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": 0.0,
+      "m15_1": 0.0,
+      "m15_2": 0.4,
+      "drawdown_24h_pct": -2.32,
+      "prelaunch_range_pct": 0.81
+    },
+    "volume": {
+      "vol_ratio_5m": 0.0,
+      "vol_ratio_last_bar": 0.0,
+      "vol_ratio_24h_vs_7d": 0.49,
+      "vol_24h_usd": 94398.0,
+      "vol_prev_daily_avg_usd": 192468.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.0,
+      "oi_now_usd": 1073696.0,
+      "oi_peak_usd": 1104755.0,
+      "oi_drawdown_from_peak_pct": -2.81
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.224,
+      "latest": 2.732
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.97,
+      "latest": 4.0
+    },
+    "funding": {
+      "avg_bps": 0.47,
+      "latest_bps": 1.0,
+      "premium_bps": 1.0
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 0.0x 不足",
+      "24h 量比 0.5x 不足",
+      "OI 1.0x 未跟",
+      "主动买 1.22"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "DRIFT",
+    "futures_symbol": "DRIFTUSDT",
+    "data_source": "futures",
+    "price": 0.01217,
+    "momentum": {
+      "m5_1": 0.08,
+      "m5_3": 0.33,
+      "m15_1": 0.33,
+      "m15_2": -0.16,
+      "drawdown_24h_pct": -0.9,
+      "prelaunch_range_pct": 0.92
+    },
+    "volume": {
+      "vol_ratio_5m": 0.81,
+      "vol_ratio_last_bar": 0.79,
+      "vol_ratio_24h_vs_7d": 0.49,
+      "vol_24h_usd": 938039.0,
+      "vol_prev_daily_avg_usd": 1900609.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.02,
+      "oi_now_usd": 1550120.0,
+      "oi_peak_usd": 1554626.0,
+      "oi_drawdown_from_peak_pct": -0.29
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.541,
+      "latest": 3.772
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.892,
+      "latest": 3.902
+    },
+    "funding": {
+      "avg_bps": 0.5,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.1% 未达启动线",
+      "5m 量能 0.8x 不足",
+      "24h 量比 0.5x 不足",
+      "OI 1.0x 未跟",
+      "主动买 1.54"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "BMT",
+    "futures_symbol": "BMTUSDT",
+    "data_source": "spot",
+    "price": 0.01284,
+    "momentum": {
+      "m5_1": -0.08,
+      "m5_3": 0.16,
+      "m15_1": 0.16,
+      "m15_2": 0.16,
+      "drawdown_24h_pct": -0.62,
+      "prelaunch_range_pct": 0.81
+    },
+    "volume": {
+      "vol_ratio_5m": 1.27,
+      "vol_ratio_last_bar": 0.22,
+      "vol_ratio_24h_vs_7d": 0.76,
+      "vol_24h_usd": 171094.0,
+      "vol_prev_daily_avg_usd": 224755.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.06,
+      "oi_now_usd": 1102586.0,
+      "oi_peak_usd": 1105269.0,
+      "oi_drawdown_from_peak_pct": -0.24
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.986,
+      "latest": 0.913
+    },
+    "long_short": {
+      "ratio_avg_1h": 4.207,
+      "latest": 4.214
+    },
+    "funding": {
+      "avg_bps": 0.21,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +-0.1% 未达启动线",
+      "5m 量能 1.3x 不足",
+      "24h 量比 0.8x 不足",
+      "OI 1.1x 未跟",
+      "主动买 1.99"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "ALPINE",
+    "futures_symbol": "ALPINEUSDT",
+    "data_source": "spot",
+    "price": 0.319,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": 0.0,
+      "m15_1": 0.0,
+      "m15_2": 0.31,
+      "drawdown_24h_pct": -1.54,
+      "prelaunch_range_pct": 0.95
+    },
+    "volume": {
+      "vol_ratio_5m": 0.57,
+      "vol_ratio_last_bar": 0.0,
+      "vol_ratio_24h_vs_7d": 0.55,
+      "vol_24h_usd": 138522.0,
+      "vol_prev_daily_avg_usd": 253330.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.98,
+      "oi_now_usd": 1308969.0,
+      "oi_peak_usd": 1341079.0,
+      "oi_drawdown_from_peak_pct": -2.39
+    },
+    "taker": {
+      "buy_sell_avg_1h": 3.534,
+      "latest": 0.703
+    },
+    "long_short": {
+      "ratio_avg_1h": 6.071,
+      "latest": 6.112
+    },
+    "funding": {
+      "avg_bps": 0.52,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 0.6x 不足",
+      "24h 量比 0.5x 不足",
+      "OI 1.0x 未跟",
+      "主动买 3.53"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "MUBARAK",
+    "futures_symbol": "MUBARAKUSDT",
+    "data_source": "spot",
+    "price": 0.01268,
+    "momentum": {
+      "m5_1": -0.16,
+      "m5_3": -0.47,
+      "m15_1": -0.24,
+      "m15_2": -0.47,
+      "drawdown_24h_pct": -9.82,
+      "prelaunch_range_pct": 1.07
+    },
+    "volume": {
+      "vol_ratio_5m": 0.22,
+      "vol_ratio_last_bar": 0.24,
+      "vol_ratio_24h_vs_7d": 0.54,
+      "vol_24h_usd": 906226.0,
+      "vol_prev_daily_avg_usd": 1671582.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.93,
+      "oi_now_usd": 1910122.0,
+      "oi_peak_usd": 2106976.0,
+      "oi_drawdown_from_peak_pct": -9.34
+    },
+    "taker": {
+      "buy_sell_avg_1h": 6.083,
+      "latest": 0.84
+    },
+    "long_short": {
+      "ratio_avg_1h": 1.607,
+      "latest": 1.614
+    },
+    "funding": {
+      "avg_bps": 0.37,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +-0.2% 未达启动线",
+      "5m 量能 0.2x 不足",
+      "24h 量比 0.5x 不足",
+      "OI 0.9x 未跟",
+      "主动买 6.08"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "OG",
+    "futures_symbol": "OGUSDT",
+    "data_source": "spot",
+    "price": 2.582,
+    "momentum": {
+      "m5_1": -0.12,
+      "m5_3": -0.19,
+      "m15_1": -0.23,
+      "m15_2": -0.04,
+      "drawdown_24h_pct": -0.84,
+      "prelaunch_range_pct": 0.32
+    },
+    "volume": {
+      "vol_ratio_5m": 0.4,
+      "vol_ratio_last_bar": 0.3,
+      "vol_ratio_24h_vs_7d": 1.41,
+      "vol_24h_usd": 306478.0,
+      "vol_prev_daily_avg_usd": 217904.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.99,
+      "oi_now_usd": 1317693.0,
+      "oi_peak_usd": 1355956.0,
+      "oi_drawdown_from_peak_pct": -2.82
+    },
+    "taker": {
+      "buy_sell_avg_1h": 2.8,
+      "latest": 0.268
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.467,
+      "latest": 3.48
+    },
+    "funding": {
+      "avg_bps": 0.39,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +-0.1% 未达启动线",
+      "5m 量能 0.4x 不足",
+      "24h 量比 1.4x 不足",
+      "OI 1.0x 未跟",
+      "主动买 2.80"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "AVA",
+    "futures_symbol": "AVAUSDT",
+    "data_source": "spot",
+    "price": 0.1926,
+    "momentum": {
+      "m5_1": 0.42,
+      "m5_3": 0.89,
+      "m15_1": 1.05,
+      "m15_2": 1.37,
+      "drawdown_24h_pct": -2.33,
+      "prelaunch_range_pct": 1.67
+    },
+    "volume": {
+      "vol_ratio_5m": 1.52,
+      "vol_ratio_last_bar": 1.66,
+      "vol_ratio_24h_vs_7d": 0.89,
+      "vol_24h_usd": 328576.0,
+      "vol_prev_daily_avg_usd": 367305.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.06,
+      "oi_now_usd": 1171015.0,
+      "oi_peak_usd": 1220351.0,
+      "oi_drawdown_from_peak_pct": -4.04
+    },
+    "taker": {
+      "buy_sell_avg_1h": 3.297,
+      "latest": 1.002
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.251,
+      "latest": 2.228
+    },
+    "funding": {
+      "avg_bps": 0.3,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.4% 未达启动线",
+      "5m 量能 1.5x 不足",
+      "24h 量比 0.9x 不足",
+      "OI 1.1x 未跟",
+      "主动买 3.30"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "GOAT",
+    "futures_symbol": "GOATUSDT",
+    "data_source": "futures",
+    "price": 0.01323,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": -0.08,
+      "m15_1": 0.15,
+      "m15_2": -0.38,
+      "drawdown_24h_pct": -1.19,
+      "prelaunch_range_pct": 0.99
+    },
+    "volume": {
+      "vol_ratio_5m": 1.37,
+      "vol_ratio_last_bar": 0.48,
+      "vol_ratio_24h_vs_7d": 0.62,
+      "vol_24h_usd": 631569.0,
+      "vol_prev_daily_avg_usd": 1014150.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.01,
+      "oi_now_usd": 1098964.0,
+      "oi_peak_usd": 1114519.0,
+      "oi_drawdown_from_peak_pct": -1.4
+    },
+    "taker": {
+      "buy_sell_avg_1h": 9.417,
+      "latest": 5.164
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.824,
+      "latest": 2.877
+    },
+    "funding": {
+      "avg_bps": 0.54,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 1.4x 不足",
+      "24h 量比 0.6x 不足",
+      "OI 1.0x 未跟",
+      "主动买 9.42"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "SANTOS",
+    "futures_symbol": "SANTOSUSDT",
+    "data_source": "spot",
+    "price": 0.48,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": -0.21,
+      "m15_1": -0.21,
+      "m15_2": -0.21,
+      "drawdown_24h_pct": -3.03,
+      "prelaunch_range_pct": 0.42
+    },
+    "volume": {
+      "vol_ratio_5m": 0.58,
+      "vol_ratio_last_bar": 0.41,
+      "vol_ratio_24h_vs_7d": 1.32,
+      "vol_24h_usd": 221222.0,
+      "vol_prev_daily_avg_usd": 167934.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.01,
+      "oi_now_usd": 1303638.0,
+      "oi_peak_usd": 1351547.0,
+      "oi_drawdown_from_peak_pct": -3.54
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.161,
+      "latest": 0.289
+    },
+    "long_short": {
+      "ratio_avg_1h": 5.638,
+      "latest": 5.793
+    },
+    "funding": {
+      "avg_bps": 0.3,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 0.6x 不足",
+      "24h 量比 1.3x 不足",
+      "OI 1.0x 未跟",
+      "主动买 1.16"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "DOOD",
+    "futures_symbol": "DOODUSDT",
+    "data_source": "futures",
+    "price": 0.001282,
+    "momentum": {
+      "m5_1": 0.08,
+      "m5_3": 0.0,
+      "m15_1": 0.23,
+      "m15_2": -0.16,
+      "drawdown_24h_pct": -1.91,
+      "prelaunch_range_pct": 0.88
+    },
+    "volume": {
+      "vol_ratio_5m": 0.67,
+      "vol_ratio_last_bar": 0.88,
+      "vol_ratio_24h_vs_7d": 1.18,
+      "vol_24h_usd": 933993.0,
+      "vol_prev_daily_avg_usd": 790588.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.08,
+      "oi_now_usd": 938616.0,
+      "oi_peak_usd": 944764.0,
+      "oi_drawdown_from_peak_pct": -0.65
+    },
+    "taker": {
+      "buy_sell_avg_1h": 2.199,
+      "latest": 2.207
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.864,
+      "latest": 2.888
+    },
+    "funding": {
+      "avg_bps": 0.39,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.1% 未达启动线",
+      "5m 量能 0.7x 不足",
+      "24h 量比 1.2x 不足",
+      "OI 1.1x 未跟",
+      "主动买 2.20"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "HAEDAL",
+    "futures_symbol": "HAEDALUSDT",
+    "data_source": "spot",
+    "price": 0.01555,
+    "momentum": {
+      "m5_1": 0.26,
+      "m5_3": 0.0,
+      "m15_1": 0.19,
+      "m15_2": 0.97,
+      "drawdown_24h_pct": -0.38,
+      "prelaunch_range_pct": 0.61
+    },
+    "volume": {
+      "vol_ratio_5m": 0.72,
+      "vol_ratio_last_bar": 0.9,
+      "vol_ratio_24h_vs_7d": 1.16,
+      "vol_24h_usd": 119875.0,
+      "vol_prev_daily_avg_usd": 103281.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.05,
+      "oi_now_usd": 1287796.0,
+      "oi_peak_usd": 1291559.0,
+      "oi_drawdown_from_peak_pct": -0.29
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.921,
+      "latest": 1.488
+    },
+    "long_short": {
+      "ratio_avg_1h": 5.312,
+      "latest": 5.25
+    },
+    "funding": {
+      "avg_bps": 0.37,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.3% 未达启动线",
+      "5m 量能 0.7x 不足",
+      "24h 量比 1.2x 不足",
+      "OI 1.1x 未跟",
+      "主动买 1.92"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "BULLA",
+    "futures_symbol": "BULLAUSDT",
+    "data_source": "futures",
+    "price": 0.014717,
+    "momentum": {
+      "m5_1": -0.22,
+      "m5_3": -0.3,
+      "m15_1": -0.29,
+      "m15_2": -1.27,
+      "drawdown_24h_pct": -2.69,
+      "prelaunch_range_pct": 0.29
+    },
+    "volume": {
+      "vol_ratio_5m": 0.82,
+      "vol_ratio_last_bar": 0.49,
+      "vol_ratio_24h_vs_7d": 0.46,
+      "vol_24h_usd": 6776574.0,
+      "vol_prev_daily_avg_usd": 14622644.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.92,
+      "oi_now_usd": 8127631.0,
+      "oi_peak_usd": 9293901.0,
+      "oi_drawdown_from_peak_pct": -12.55
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.177,
+      "latest": 1.026
+    },
+    "long_short": {
+      "ratio_avg_1h": 1.938,
+      "latest": 1.939
+    },
+    "funding": {
+      "avg_bps": 3.23,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +-0.2% 未达启动线",
+      "5m 量能 0.8x 不足",
+      "24h 量比 0.5x 不足",
+      "OI 0.9x 未跟",
+      "主动买 1.18"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "CTK",
+    "futures_symbol": "CTKUSDT",
+    "data_source": "spot",
+    "price": 0.1027,
+    "momentum": {
+      "m5_1": -0.1,
+      "m5_3": 0.0,
+      "m15_1": 0.1,
+      "m15_2": 0.29,
+      "drawdown_24h_pct": -0.48,
+      "prelaunch_range_pct": 0.7
+    },
+    "volume": {
+      "vol_ratio_5m": 1.73,
+      "vol_ratio_last_bar": 1.43,
+      "vol_ratio_24h_vs_7d": 0.18,
+      "vol_24h_usd": 32411.0,
+      "vol_prev_daily_avg_usd": 181129.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.01,
+      "oi_now_usd": 725445.0,
+      "oi_peak_usd": 748742.0,
+      "oi_drawdown_from_peak_pct": -3.11
+    },
+    "taker": {
+      "buy_sell_avg_1h": 4.09,
+      "latest": 1.012
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.567,
+      "latest": 3.533
+    },
+    "funding": {
+      "avg_bps": 0.26,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +-0.1% 未达启动线",
+      "5m 量能 1.7x 不足",
+      "24h 量比 0.2x 不足",
+      "OI 1.0x 未跟",
+      "主动买 4.09"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "SPELL",
+    "futures_symbol": "SPELLUSDT",
+    "data_source": "spot",
+    "price": 7.9e-05,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": 0.0,
+      "m15_1": 0.0,
+      "m15_2": -0.13,
+      "drawdown_24h_pct": -1.13,
+      "prelaunch_range_pct": 0.64
+    },
+    "volume": {
+      "vol_ratio_5m": 0.7,
+      "vol_ratio_last_bar": 0.16,
+      "vol_ratio_24h_vs_7d": 0.72,
+      "vol_24h_usd": 117955.0,
+      "vol_prev_daily_avg_usd": 163700.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.02,
+      "oi_now_usd": 1264355.0,
+      "oi_peak_usd": 1264355.0,
+      "oi_drawdown_from_peak_pct": 0.0
+    },
+    "taker": {
+      "buy_sell_avg_1h": 4.179,
+      "latest": 1.103
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.805,
+      "latest": 2.791
+    },
+    "funding": {
+      "avg_bps": -11.72,
+      "latest_bps": 1.0,
+      "premium_bps": 1.0
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 0.7x 不足",
+      "24h 量比 0.7x 不足",
+      "OI 1.0x 未跟",
+      "主动买 4.18"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "PIPPIN",
+    "futures_symbol": "PIPPINUSDT",
+    "data_source": "futures",
+    "price": 0.01709,
+    "momentum": {
+      "m5_1": 0.53,
+      "m5_3": 0.47,
+      "m15_1": 0.35,
+      "m15_2": 0.71,
+      "drawdown_24h_pct": -1.56,
+      "prelaunch_range_pct": 4.49
+    },
+    "volume": {
+      "vol_ratio_5m": 1.57,
+      "vol_ratio_last_bar": 2.46,
+      "vol_ratio_24h_vs_7d": 0.41,
+      "vol_24h_usd": 4074453.0,
+      "vol_prev_daily_avg_usd": 9868193.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.0,
+      "oi_now_usd": 6092952.0,
+      "oi_peak_usd": 6146952.0,
+      "oi_drawdown_from_peak_pct": -0.88
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.384,
+      "latest": 0.412
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.396,
+      "latest": 3.376
+    },
+    "funding": {
+      "avg_bps": 1.16,
+      "latest_bps": 5.34,
+      "premium_bps": 5.0676
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +0.5% 未达启动线",
+      "5m 量能 1.6x 不足",
+      "24h 量比 0.4x 不足",
+      "OI 1.0x 未跟",
+      "主动买 1.38"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "CELR",
+    "futures_symbol": "CELRUSDT",
+    "data_source": "spot",
+    "price": 0.001733,
+    "momentum": {
+      "m5_1": -0.12,
+      "m5_3": 0.35,
+      "m15_1": 0.35,
+      "m15_2": -0.35,
+      "drawdown_24h_pct": -1.65,
+      "prelaunch_range_pct": 0.95
+    },
+    "volume": {
+      "vol_ratio_5m": 0.36,
+      "vol_ratio_last_bar": 0.01,
+      "vol_ratio_24h_vs_7d": 0.86,
+      "vol_24h_usd": 326674.0,
+      "vol_prev_daily_avg_usd": 381391.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.02,
+      "oi_now_usd": 932747.0,
+      "oi_peak_usd": 960584.0,
+      "oi_drawdown_from_peak_pct": -2.9
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.644,
+      "latest": 0.885
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.33,
+      "latest": 3.353
+    },
+    "funding": {
+      "avg_bps": 0.46,
+      "latest_bps": 1.0,
+      "premium_bps": 1.0
+    },
+    "score": 2.5,
+    "notes": [
+      "5m +-0.1% 未达启动线",
+      "5m 量能 0.4x 不足",
+      "24h 量比 0.9x 不足",
+      "OI 1.0x 未跟",
+      "主动买 1.64"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "WAXP",
+    "futures_symbol": "WAXPUSDT",
+    "data_source": "spot",
+    "price": 0.00388,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": 0.0,
+      "m15_1": 0.0,
+      "m15_2": 0.26,
+      "drawdown_24h_pct": -0.51,
+      "prelaunch_range_pct": 1.09
+    },
+    "volume": {
+      "vol_ratio_5m": 0.39,
+      "vol_ratio_last_bar": 0.0,
+      "vol_ratio_24h_vs_7d": 0.68,
+      "vol_24h_usd": 444326.0,
+      "vol_prev_daily_avg_usd": 653691.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.87,
+      "oi_now_usd": 1447402.0,
+      "oi_peak_usd": 1701792.0,
+      "oi_drawdown_from_peak_pct": -14.95
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.923,
+      "latest": 0.514
+    },
+    "long_short": {
+      "ratio_avg_1h": 1.306,
+      "latest": 1.321
+    },
+    "funding": {
+      "avg_bps": -6.51,
+      "latest_bps": -5.48,
+      "premium_bps": -5.2303
+    },
+    "score": 1.5,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 0.4x 不足",
+      "24h 量比 0.7x 不足",
+      "OI 0.9x 未跟",
+      "主动买 1.92",
+      "费率 -5.48bp 异常"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "VANRY",
+    "futures_symbol": "VANRYUSDT",
+    "data_source": "spot",
+    "price": 0.003375,
+    "momentum": {
+      "m5_1": 0.12,
+      "m5_3": -0.06,
+      "m15_1": 0.99,
+      "m15_2": -0.15,
+      "drawdown_24h_pct": -8.39,
+      "prelaunch_range_pct": 6.81
+    },
+    "volume": {
+      "vol_ratio_5m": 1.38,
+      "vol_ratio_last_bar": 0.51,
+      "vol_ratio_24h_vs_7d": 0.92,
+      "vol_24h_usd": 3067353.0,
+      "vol_prev_daily_avg_usd": 3329686.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.81,
+      "oi_now_usd": 1600059.0,
+      "oi_peak_usd": 2151164.0,
+      "oi_drawdown_from_peak_pct": -25.62
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.089,
+      "latest": 1.533
+    },
+    "long_short": {
+      "ratio_avg_1h": 1.306,
+      "latest": 1.302
+    },
+    "funding": {
+      "avg_bps": -19.5,
+      "latest_bps": -6.96,
+      "premium_bps": -6.721299999999999
+    },
+    "score": 1.0,
+    "notes": [
+      "5m +0.1% 未达启动线",
+      "5m 量能 1.4x 不足",
+      "24h 量比 0.9x 不足",
+      "OI 0.8x 未跟",
+      "主动买 1.09",
+      "费率 -6.96bp 异常"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "PTB",
+    "futures_symbol": "PTBUSDT",
+    "data_source": "futures",
+    "price": 0.0008562,
+    "momentum": {
+      "m5_1": 0.71,
+      "m5_3": -0.14,
+      "m15_1": 0.45,
+      "m15_2": 0.34,
+      "drawdown_24h_pct": -11.76,
+      "prelaunch_range_pct": 3.53
+    },
+    "volume": {
+      "vol_ratio_5m": 0.61,
+      "vol_ratio_last_bar": 0.82,
+      "vol_ratio_24h_vs_7d": 0.44,
+      "vol_24h_usd": 8035446.0,
+      "vol_prev_daily_avg_usd": 18197530.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.92,
+      "oi_now_usd": 4955615.0,
+      "oi_peak_usd": 5535305.0,
+      "oi_drawdown_from_peak_pct": -10.47
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.012,
+      "latest": 0.583
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.502,
+      "latest": 2.52
+    },
+    "funding": {
+      "avg_bps": 1.68,
+      "latest_bps": 2.03,
+      "premium_bps": 1.8316999999999999
+    },
+    "score": 0.5,
+    "notes": [
+      "5m +0.7% 未达启动线",
+      "5m 量能 0.6x 不足",
+      "24h 量比 0.4x 不足",
+      "OI 0.9x 未跟",
+      "主动买 1.01 弱"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "我踏马来了",
+    "futures_symbol": "我踏马来了USDT",
+    "data_source": "futures",
+    "price": 0.008386,
+    "momentum": {
+      "m5_1": -0.11,
+      "m5_3": -0.49,
+      "m15_1": -0.29,
+      "m15_2": -0.17,
+      "drawdown_24h_pct": -5.13,
+      "prelaunch_range_pct": 2.35
+    },
+    "volume": {
+      "vol_ratio_5m": 0.52,
+      "vol_ratio_last_bar": 0.33,
+      "vol_ratio_24h_vs_7d": 0.77,
+      "vol_24h_usd": 1306738.0,
+      "vol_prev_daily_avg_usd": 1687170.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.94,
+      "oi_now_usd": 2947198.0,
+      "oi_peak_usd": 3181349.0,
+      "oi_drawdown_from_peak_pct": -7.36
+    },
+    "taker": {
+      "buy_sell_avg_1h": 0.997,
+      "latest": 0.381
+    },
+    "long_short": {
+      "ratio_avg_1h": 4.36,
+      "latest": 4.382
+    },
+    "funding": {
+      "avg_bps": 1.81,
+      "latest_bps": 5.5,
+      "premium_bps": 5.1942
+    },
+    "score": 0.5,
+    "notes": [
+      "5m +-0.1% 未达启动线",
+      "5m 量能 0.5x 不足",
+      "24h 量比 0.8x 不足",
+      "OI 0.9x 未跟",
+      "主动买 1.00 弱"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "SCRT",
+    "futures_symbol": "SCRTUSDT",
+    "data_source": "spot",
+    "price": 0.0328,
+    "momentum": {
+      "m5_1": 0.31,
+      "m5_3": 0.0,
+      "m15_1": 0.0,
+      "m15_2": 0.0,
+      "drawdown_24h_pct": -2.09,
+      "prelaunch_range_pct": 2.48
+    },
+    "volume": {
+      "vol_ratio_5m": 0.71,
+      "vol_ratio_last_bar": 0.57,
+      "vol_ratio_24h_vs_7d": 0.52,
+      "vol_24h_usd": 136636.0,
+      "vol_prev_daily_avg_usd": 262161.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.02,
+      "oi_now_usd": 1364621.0,
+      "oi_peak_usd": 1402316.0,
+      "oi_drawdown_from_peak_pct": -2.69
+    },
+    "taker": {
+      "buy_sell_avg_1h": 0.913,
+      "latest": 0.323
+    },
+    "long_short": {
+      "ratio_avg_1h": 4.073,
+      "latest": 4.131
+    },
+    "funding": {
+      "avg_bps": 0.6,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": 0.5,
+    "notes": [
+      "5m +0.3% 未达启动线",
+      "5m 量能 0.7x 不足",
+      "24h 量比 0.5x 不足",
+      "OI 1.0x 未跟",
+      "主动买 0.91 弱"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "CLANKER",
+    "futures_symbol": "CLANKERUSDT",
+    "data_source": "futures",
+    "price": 12.59,
+    "momentum": {
+      "m5_1": 0.32,
+      "m5_3": 0.0,
+      "m15_1": 0.56,
+      "m15_2": -0.08,
+      "drawdown_24h_pct": -1.33,
+      "prelaunch_range_pct": 1.46
+    },
+    "volume": {
+      "vol_ratio_5m": 1.74,
+      "vol_ratio_last_bar": 1.6,
+      "vol_ratio_24h_vs_7d": 0.5,
+      "vol_24h_usd": 584993.0,
+      "vol_prev_daily_avg_usd": 1179163.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.07,
+      "oi_now_usd": 1194782.0,
+      "oi_peak_usd": 1216886.0,
+      "oi_drawdown_from_peak_pct": -1.82
+    },
+    "taker": {
+      "buy_sell_avg_1h": 0.753,
+      "latest": 1.636
+    },
+    "long_short": {
+      "ratio_avg_1h": 3.683,
+      "latest": 3.712
+    },
+    "funding": {
+      "avg_bps": 1.25,
+      "latest_bps": 8.51,
+      "premium_bps": 8.1166
+    },
+    "score": 0.5,
+    "notes": [
+      "5m +0.3% 未达启动线",
+      "5m 量能 1.7x 不足",
+      "24h 量比 0.5x 不足",
+      "OI 1.1x 未跟",
+      "主动买 0.75 弱"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "ARPA",
+    "futures_symbol": "ARPAUSDT",
+    "data_source": "spot",
+    "price": 0.00849,
+    "momentum": {
+      "m5_1": 0.0,
+      "m5_3": -0.12,
+      "m15_1": 0.0,
+      "m15_2": -0.35,
+      "drawdown_24h_pct": -1.16,
+      "prelaunch_range_pct": 0.36
+    },
+    "volume": {
+      "vol_ratio_5m": 0.49,
+      "vol_ratio_last_bar": 0.0,
+      "vol_ratio_24h_vs_7d": 1.03,
+      "vol_24h_usd": 165012.0,
+      "vol_prev_daily_avg_usd": 160742.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 1.04,
+      "oi_now_usd": 1804721.0,
+      "oi_peak_usd": 1831717.0,
+      "oi_drawdown_from_peak_pct": -1.47
+    },
+    "taker": {
+      "buy_sell_avg_1h": 0.91,
+      "latest": 4.709
+    },
+    "long_short": {
+      "ratio_avg_1h": 2.434,
+      "latest": 2.477
+    },
+    "funding": {
+      "avg_bps": -1.45,
+      "latest_bps": 1.0,
+      "premium_bps": 1.0
+    },
+    "score": 0.5,
+    "notes": [
+      "5m +0.0% 未达启动线",
+      "5m 量能 0.5x 不足",
+      "24h 量比 1.0x 不足",
+      "OI 1.0x 未跟",
+      "主动买 0.91 弱"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "TLM",
+    "futures_symbol": "TLMUSDT",
+    "data_source": "spot",
+    "price": 0.001631,
+    "momentum": {
+      "m5_1": 0.12,
+      "m5_3": -0.43,
+      "m15_1": -0.24,
+      "m15_2": -0.67,
+      "drawdown_24h_pct": -9.09,
+      "prelaunch_range_pct": 17.94
+    },
+    "volume": {
+      "vol_ratio_5m": 0.24,
+      "vol_ratio_last_bar": 0.12,
+      "vol_ratio_24h_vs_7d": 1.1,
+      "vol_24h_usd": 2656088.0,
+      "vol_prev_daily_avg_usd": 2423633.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.96,
+      "oi_now_usd": 3365880.0,
+      "oi_peak_usd": 3723097.0,
+      "oi_drawdown_from_peak_pct": -9.59
+    },
+    "taker": {
+      "buy_sell_avg_1h": 0.836,
+      "latest": 0.6
+    },
+    "long_short": {
+      "ratio_avg_1h": 0.728,
+      "latest": 0.728
+    },
+    "funding": {
+      "avg_bps": -17.5,
+      "latest_bps": 0.09,
+      "premium_bps": -0.07379999999999999
+    },
+    "score": -1.5,
+    "notes": [
+      "5m +0.1% 未达启动线",
+      "5m 量能 0.2x 不足",
+      "24h 量比 1.1x 不足",
+      "OI 1.0x 未跟",
+      "主动买 0.84 弱",
+      "大户多空比 0.73 偏空",
+      "启动前振幅 17.9% 偏大"
+    ],
+    "status": "quiet",
+    "reason": "未达启动信号"
+  },
+  {
+    "symbol": "VIC",
+    "futures_symbol": "VICUSDT",
+    "data_source": "spot",
+    "price": 0.0338,
+    "momentum": {
+      "m5_1": -0.59,
+      "m5_3": -1.17,
+      "m15_1": -1.17,
+      "m15_2": -1.46,
+      "drawdown_24h_pct": -28.09,
+      "prelaunch_range_pct": 5.32
+    },
+    "volume": {
+      "vol_ratio_5m": 0.12,
+      "vol_ratio_last_bar": 0.11,
+      "vol_ratio_24h_vs_7d": 1.36,
+      "vol_24h_usd": 7814211.0,
+      "vol_prev_daily_avg_usd": 5726857.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.88,
+      "oi_now_usd": 1848848.0,
+      "oi_peak_usd": 2591589.0,
+      "oi_drawdown_from_peak_pct": -28.66
+    },
+    "taker": {
+      "buy_sell_avg_1h": 1.086,
+      "latest": 0.861
+    },
+    "long_short": {
+      "ratio_avg_1h": 1.216,
+      "latest": 1.227
+    },
+    "funding": {
+      "avg_bps": 0.74,
+      "latest_bps": 4.45,
+      "premium_bps": 4.0854
+    },
+    "score": -1.0,
+    "notes": [
+      "5m +-0.6% 未达启动线",
+      "5m 量能 0.1x 不足",
+      "24h 量比 1.4x 不足",
+      "OI 0.9x 未跟",
+      "主动买 1.09",
+      "已从高点回撤 -28.1%"
+    ],
+    "status": "topped",
+    "reason": "已从高点大幅回撤，疑似见顶"
+  },
+  {
+    "symbol": "KOMA",
+    "futures_symbol": "KOMAUSDT",
+    "data_source": "futures",
+    "price": 0.011891,
+    "momentum": {
+      "m5_1": -0.06,
+      "m5_3": 0.3,
+      "m15_1": 0.31,
+      "m15_2": -0.33,
+      "drawdown_24h_pct": -23.65,
+      "prelaunch_range_pct": 3.92
+    },
+    "volume": {
+      "vol_ratio_5m": 0.72,
+      "vol_ratio_last_bar": 0.18,
+      "vol_ratio_24h_vs_7d": 0.11,
+      "vol_24h_usd": 23205426.0,
+      "vol_prev_daily_avg_usd": 217985592.0
+    },
+    "futures": {
+      "oi_x_early_to_now": 0.79,
+      "oi_now_usd": 4683352.0,
+      "oi_peak_usd": 6701571.0,
+      "oi_drawdown_from_peak_pct": -30.12
+    },
+    "taker": {
+      "buy_sell_avg_1h": 0.998,
+      "latest": 1.037
+    },
+    "long_short": {
+      "ratio_avg_1h": 1.784,
+      "latest": 1.773
+    },
+    "funding": {
+      "avg_bps": 2.38,
+      "latest_bps": 0.5,
+      "premium_bps": 0.5
+    },
+    "score": -2.5,
+    "notes": [
+      "5m +-0.1% 未达启动线",
+      "5m 量能 0.7x 不足",
+      "24h 量比 0.1x 不足",
+      "OI 0.8x 未跟",
+      "主动买 1.00 弱",
+      "已从高点回撤 -23.7%"
+    ],
+    "status": "topped",
+    "reason": "已从高点大幅回撤，疑似见顶"
+  }
+]

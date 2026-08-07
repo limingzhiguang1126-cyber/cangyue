@@ -76,6 +76,66 @@ cd docker && docker compose up -d
 
 默认在 `localhost:1200` 起一个 RSSHub 实例，Truth Social / Musk X 等路由依赖它。
 
+### 5. 筛选币安小市值合约标的（可选工具）
+
+```bash
+# 输出“有 USDT-M 永续合约 + 现货/Alpha”中市值最小的 50 个标的（表格）
+python -m src.screener.binance_smallcap --top 50
+
+# JSON 输出 / 写入文件
+python -m src.screener.binance_smallcap --top 50 --json
+python -m src.screener.binance_smallcap --top 50 --output data/smallcap_top50.json
+```
+
+实现说明（v2）：
+- 筛选条件：**有币安 USDT-M 永续合约** 且（**币安现货** 或 **Binance Alpha**）的标的，按市值升序取 Top N
+- 数据源：
+  - 币安现货 24h 行情：`data-api.binance.vision`（国内可达）
+  - 币安 U 本位合约交易对：`data.binance.vision` S3 桶（`fapi.binance.com` 直连常被墙）
+  - Binance Alpha 全 token 列表（自带权威 marketCap / circulatingSupply）：`www.binance.com/bapi/...`，经 CORS 代理转发
+  - CoinLore 全市场供应量（补充现货-only 币的估算）
+- 市值口径（可信到次可信）：
+  1. Binance Alpha 官方 marketCap（Alpha 版本与币安现货价格一致，或该币仅在 Alpha）
+  2. CoinLore 估算市值 = 币安实时价 × max(csupply, tsupply)，价格交叉验证通过（0.3~3.0）
+- 可靠性处理：
+  - 同名冲突（CoinLore 匹配到错误同名币）通过价格交叉验证 + 黑名单（`UNRELIABLE_COINLORE`）过滤
+  - 仅 Alpha 的币要求 `offline=False`（仍在 Alpha 交易），避免已下架历史残留币
+  - 用 tsupply 而非 csupply 估算，避免 BTTC 等小币供应量失真（差 1000 倍）导致市值虚低
+
+### 6. v1.1 实时信号监控 + Telegram 推送（自动化）
+
+在「线 1 候选池」（`data/smallcap_top100_fdv.json`，FDV 最小 Top100）上
+按 **v1.1 标准** 每 15 分钟轮询一次，命中信号即推送 Telegram，
+并标注命中原因 + 观察/建仓建议。
+
+```bash
+# 单次扫描并推送（调试用）
+python -m src.screener.v11_signal_daemon --once
+
+# 只打印不推送（dry-run，不依赖 Telegram token）
+python -m src.screener.v11_signal_daemon --once --dry-run
+
+# 常驻轮询：默认每 15 分钟一次（Ctrl-C 退出）
+python -m src.screener.v11_signal_daemon
+
+# 自定义轮询间隔（分钟）
+python -m src.screener.v11_signal_daemon --interval 15
+```
+
+**v1.1 标准**（2026-08-07 讨论定稿 + 回测修正）：
+
+| 信号线 | 触发条件 | 动作 |
+|---|---|---|
+| 🔔 通知线① | 5m 涨幅 ≥ +10%（收盘口径） | 通知 + 进观察；叠加量能≥3x + OI≥1.15x + 费率正常 → 可小仓 |
+| 🔔 主信号② | 4h 涨幅 ≥ +30% 且距本波高点回撤 < 20% | OI 同步放大≥1.15x → **可建仓**；否则降级观察 |
+| 📡 辅助线③ | 4h 涨幅 3%~10% 且 4h 量能 ≥ 5x | 提前埋伏观察 |
+| ⛔ 一票否决 | 资金费率 > +0.3% 或 < -0.1%（v1.1 放宽上限）/ OI 较峰值回落 > 30% | 命中信号也不碰 |
+
+**去重机制**：同标的 + 同信号线在去重窗口内（默认 2h）只推一次，
+状态持久化到 `data/v11_signal_state.json`，重启不重复轰炸。
+
+**依赖环境变量**：`TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`（见 `.env.example`）。
+
 ## 🧪 运行测试
 
 ```bash
@@ -104,6 +164,48 @@ python -m pytest tests/ -v
 - 方式 A：`python -m src.main` + systemd 服务保活（推荐）
 - 方式 B：`docker compose up -d`（含 RSSHub）
 - 进程管理：systemd unit 示例见 `docker/fin-alert.service`
+
+## ☁️ 云端部署（免费 · 无需自购服务器）
+
+不想本地跑 / 不想买服务器？直接用 **CNB 云原生构建的定时任务**即可：
+代码跑在 CNB 云端构建机上，由平台调度，**免费稳定**，无需 7x24 常驻进程。
+
+### 已配置的云端任务（`.cnb.yml`）
+
+| 任务 | 频率 | 说明 |
+|---|---|---|
+| `refresh-pool` | 每天 07:35 | 刷新 `data/smallcap_top100_fdv.json`（FDV 最小 Top100）并自动提交 |
+| `v11-signal-scan` | 每 15 分钟 | 扫描候选池，命中 v1.1 信号推送 Telegram，并把去重状态回推仓库 |
+
+### 启用步骤（约 3 分钟）
+
+1. **创建密钥仓库**（存 Telegram 凭据，绝不写进公开仓库）
+   - 打开 [https://cnb.cool/new/repos](https://cnb.cool/new/repos)，仓库类型选 **`密钥仓库`**，名称如 `cangyue-secrets`
+   - 新建文件 `telegram.yml`，内容：
+     ```yaml
+     TELEGRAM_BOT_TOKEN: "你的 bot token"
+     TELEGRAM_CHAT_ID: "你的 chat_id"
+     ```
+2. **修改 `.cnb.yml`**：把两处 `imports` 里的
+   `https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml`
+   替换成你自己的密钥仓库路径后合并到 `main`。
+3. **确认设置**：仓库 `设置 → 云原生构建` 中「允许定时任务自动触发」已开启
+   （本仓库默认已开启，见 `cnb git-settings get-pipeline-settings`）。
+4. 定时任务配置合并后即生效，无需任何常驻进程。
+
+### 本地调试
+
+```bash
+# 单轮扫描 + 推送（不常驻，等价于云端每次拉起）
+python scripts/v11_cloud_run.py --top 100 --push-state
+
+# 只打印不推送
+TELEGRAM_BOT_TOKEN= TELEGRAM_CHAT_ID= python scripts/v11_cloud_run.py --top 10
+```
+
+> ⚠️ 说明：CNB 定时任务最小间隔为 5 分钟；此处按 v1.1 标准设计为 15 分钟轮询。
+> 状态持久化依赖流水线把 `data/v11_signal_state.json` 推回仓库；
+> 若回推失败（如并发冲突）仅影响「去重」，不影响「推送」，属优雅降级。
 
 ## 🔗 相关链接
 

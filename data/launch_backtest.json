@@ -1,0 +1,342 @@
+[
+  {
+    "symbol": "HEIUSDT",
+    "launch_ts": "08-04 00:00",
+    "pre_launch_price": 0.08688,
+    "pre_72h": {
+      "amp_pct": 25.8,
+      "avg_vol_usd": 1825203.0,
+      "vol_vs_earlier_x": 3.91
+    },
+    "launch_bar": {
+      "ts": "08-04 00:00",
+      "chg_pct": -0.5,
+      "vol_x": 0.3,
+      "oi_x": 0.85,
+      "taker": 0.845,
+      "ls": 1.075
+    },
+    "signal": {
+      "mom_ok": false,
+      "vol_ok": false,
+      "oi_ok": false,
+      "taker_ok": false,
+      "ls_ok": true,
+      "score": 1.0,
+      "status": "quiet"
+    },
+    "first_vol_oi_signal": null,
+    "forward": {
+      "f24h_pct": 106.1,
+      "f48h_pct": 261.3,
+      "peak48h_pct": 268.0
+    }
+  },
+  {
+    "symbol": "BICOUSDT",
+    "launch_ts": "08-02 00:00",
+    "pre_launch_price": 0.01172,
+    "pre_72h": {
+      "amp_pct": 7.4,
+      "avg_vol_usd": 199839.0,
+      "vol_vs_earlier_x": 0.58
+    },
+    "launch_bar": {
+      "ts": "08-02 00:00",
+      "chg_pct": 1.2,
+      "vol_x": 0.5,
+      "oi_x": 0.46,
+      "taker": 0.946,
+      "ls": 2.975
+    },
+    "signal": {
+      "mom_ok": false,
+      "vol_ok": false,
+      "oi_ok": false,
+      "taker_ok": false,
+      "ls_ok": true,
+      "score": 1.0,
+      "status": "quiet"
+    },
+    "first_vol_oi_signal": null,
+    "forward": {
+      "f24h_pct": 31.8,
+      "f48h_pct": 38.8,
+      "peak48h_pct": 67.6
+    }
+  },
+  {
+    "symbol": "TUTUSDT",
+    "launch_ts": "08-03 00:00",
+    "pre_launch_price": 0.01757,
+    "pre_72h": {
+      "amp_pct": 27.5,
+      "avg_vol_usd": 848750.0,
+      "vol_vs_earlier_x": 2.64
+    },
+    "launch_bar": {
+      "ts": "08-03 00:00",
+      "chg_pct": 6.2,
+      "vol_x": 1.4,
+      "oi_x": 2.29,
+      "taker": 1.168,
+      "ls": 2.206
+    },
+    "signal": {
+      "mom_ok": true,
+      "vol_ok": false,
+      "oi_ok": true,
+      "taker_ok": true,
+      "ls_ok": true,
+      "score": 6.5,
+      "status": "watch"
+    },
+    "first_vol_oi_signal": {
+      "ts": "08-01 08:00",
+      "chg_pct": 10.4,
+      "vol_x": 4.1,
+      "oi_x": 1.99
+    },
+    "forward": {
+      "f24h_pct": 15.1,
+      "f48h_pct": 29.2,
+      "peak48h_pct": 31.1
+    }
+  },
+  {
+    "symbol": "SKYAIUSDT",
+    "launch_ts": "08-02 00:00",
+    "pre_launch_price": 0.02582,
+    "pre_72h": {
+      "amp_pct": 10.4,
+      "avg_vol_usd": 528906.0,
+      "vol_vs_earlier_x": 0.55
+    },
+    "launch_bar": {
+      "ts": "08-02 00:00",
+      "chg_pct": 1.1,
+      "vol_x": 1.2,
+      "oi_x": 0.55,
+      "taker": 1.095,
+      "ls": 1.483
+    },
+    "signal": {
+      "mom_ok": false,
+      "vol_ok": false,
+      "oi_ok": false,
+      "taker_ok": true,
+      "ls_ok": true,
+      "score": 2.5,
+      "status": "quiet"
+    },
+    "first_vol_oi_signal": null,
+    "forward": {
+      "f24h_pct": 26.4,
+      "f48h_pct": 85.8,
+      "peak48h_pct": 87.1
+    }
+  },
+  {
+    "symbol": "ACEUSDT",
+    "launch_ts": "08-06 00:00",
+    "pre_launch_price": 0.07069,
+    "pre_72h": {
+      "amp_pct": 20.9,
+      "avg_vol_usd": 2146080.0,
+      "vol_vs_earlier_x": 1.88
+    },
+    "launch_bar": {
+      "ts": "08-06 00:00",
+      "chg_pct": 1.6,
+      "vol_x": 0.5,
+      "oi_x": 2.99,
+      "taker": 0.953,
+      "ls": 1.062
+    },
+    "signal": {
+      "mom_ok": true,
+      "vol_ok": false,
+      "oi_ok": true,
+      "taker_ok": false,
+      "ls_ok": true,
+      "score": 5.0,
+      "status": "watch"
+    },
+    "first_vol_oi_signal": null,
+    "forward": {
+      "f24h_pct": null,
+      "f48h_pct": null,
+      "peak48h_pct": 90.1
+    }
+  },
+  {
+    "symbol": "HFTUSDT",
+    "launch_ts": "08-03 00:00",
+    "pre_launch_price": 0.00886,
+    "pre_72h": {
+      "amp_pct": 9.5,
+      "avg_vol_usd": 201208.0,
+      "vol_vs_earlier_x": 1.23
+    },
+    "launch_bar": {
+      "ts": "08-03 00:00",
+      "chg_pct": -17.4,
+      "vol_x": 14.8,
+      "oi_x": 0.99,
+      "taker": 0.849,
+      "ls": 3.438
+    },
+    "signal": {
+      "mom_ok": false,
+      "vol_ok": true,
+      "oi_ok": false,
+      "taker_ok": false,
+      "ls_ok": true,
+      "score": 3.0,
+      "status": "quiet"
+    },
+    "first_vol_oi_signal": null,
+    "forward": {
+      "f24h_pct": 28.0,
+      "f48h_pct": 64.1,
+      "peak48h_pct": 88.1
+    }
+  },
+  {
+    "symbol": "CTSIUSDT",
+    "launch_ts": "08-06 00:00",
+    "pre_launch_price": 0.02147,
+    "pre_72h": {
+      "amp_pct": 3.8,
+      "avg_vol_usd": 56457.0,
+      "vol_vs_earlier_x": 0.76
+    },
+    "launch_bar": {
+      "ts": "08-06 00:00",
+      "chg_pct": 0.6,
+      "vol_x": 0.9,
+      "oi_x": 0.95,
+      "taker": 0.709,
+      "ls": 2.751
+    },
+    "signal": {
+      "mom_ok": false,
+      "vol_ok": false,
+      "oi_ok": false,
+      "taker_ok": false,
+      "ls_ok": true,
+      "score": 1.0,
+      "status": "quiet"
+    },
+    "first_vol_oi_signal": null,
+    "forward": {
+      "f24h_pct": null,
+      "f48h_pct": null,
+      "peak48h_pct": 82.6
+    }
+  },
+  {
+    "symbol": "COOKIEUSDT",
+    "launch_ts": "08-06 00:00",
+    "pre_launch_price": 0.00839,
+    "pre_72h": {
+      "amp_pct": 15.9,
+      "avg_vol_usd": 249344.0,
+      "vol_vs_earlier_x": 1.24
+    },
+    "launch_bar": {
+      "ts": "08-06 00:00",
+      "chg_pct": -1.1,
+      "vol_x": 0.8,
+      "oi_x": 0.94,
+      "taker": 0.802,
+      "ls": 3.941
+    },
+    "signal": {
+      "mom_ok": false,
+      "vol_ok": false,
+      "oi_ok": false,
+      "taker_ok": false,
+      "ls_ok": true,
+      "score": 1.0,
+      "status": "quiet"
+    },
+    "first_vol_oi_signal": null,
+    "forward": {
+      "f24h_pct": null,
+      "f48h_pct": null,
+      "peak48h_pct": 31.0
+    }
+  },
+  {
+    "symbol": "ZBTUSDT",
+    "launch_ts": "08-05 00:00",
+    "pre_launch_price": 0.10771,
+    "pre_72h": {
+      "amp_pct": 18.1,
+      "avg_vol_usd": 737997.0,
+      "vol_vs_earlier_x": 0.96
+    },
+    "launch_bar": {
+      "ts": "08-05 00:00",
+      "chg_pct": -0.7,
+      "vol_x": 1.5,
+      "oi_x": 0.92,
+      "taker": 1.004,
+      "ls": 0.747
+    },
+    "signal": {
+      "mom_ok": false,
+      "vol_ok": false,
+      "oi_ok": false,
+      "taker_ok": false,
+      "ls_ok": false,
+      "score": 0.0,
+      "status": "quiet"
+    },
+    "first_vol_oi_signal": null,
+    "forward": {
+      "f24h_pct": 21.4,
+      "f48h_pct": null,
+      "peak48h_pct": 74.0
+    }
+  },
+  {
+    "symbol": "KOMAUSDT",
+    "launch_ts": "07-30 00:00",
+    "pre_launch_price": 0.00789,
+    "pre_72h": {
+      "amp_pct": 10.1,
+      "avg_vol_usd": 155810.0,
+      "vol_vs_earlier_x": 0.92
+    },
+    "launch_bar": {
+      "ts": "07-30 00:00",
+      "chg_pct": 15.1,
+      "vol_x": 23.6,
+      "oi_x": 1.16,
+      "taker": 0.971,
+      "ls": 3.66
+    },
+    "signal": {
+      "mom_ok": true,
+      "vol_ok": true,
+      "oi_ok": true,
+      "taker_ok": false,
+      "ls_ok": true,
+      "score": 7.0,
+      "status": "launching"
+    },
+    "first_vol_oi_signal": {
+      "ts": "07-30 00:00",
+      "chg_pct": 15.1,
+      "vol_x": 23.6,
+      "oi_x": 1.16
+    },
+    "forward": {
+      "f24h_pct": 97.2,
+      "f48h_pct": 220.9,
+      "peak48h_pct": 270.5
+    }
+  }
+]

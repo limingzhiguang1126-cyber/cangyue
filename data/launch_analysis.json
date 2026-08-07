@@ -1,0 +1,405 @@
+[
+  {
+    "symbol": "HEI",
+    "spot_symbol": "HEIUSDT",
+    "gate_symbol": "HEI_USDT",
+    "has_spot": true,
+    "spot": {
+      "first_ts": 1785420000000,
+      "last_ts": 1786021200000,
+      "price_7d_ago": 0.0823,
+      "price_now": 0.2628,
+      "peak": 0.5401,
+      "peak_ts": 1786006800000,
+      "drawdown_from_peak_pct": -51.34234401036846,
+      "chg_7d_pct": 219.31956257594166,
+      "vol_24h_usd": 114938064.56096001,
+      "vol_24h_avg_usd": 4789086.023373334,
+      "vol_prev_avg_usd": 279042.9764538889,
+      "vol_ratio_24h_vs_prev": 17.16253920537117,
+      "launch": {
+        "ts": 1785859200000,
+        "launch_bar_vol_usd": 481378.16846,
+        "launch_bar_chg_pct": 4.226804123711332,
+        "avg_vol_72h_before_usd": 84966.0865123611,
+        "launch_vol_mult": 5.665533016987522,
+        "pre24h_range_pct": 15.882352941176459
+      }
+    },
+    "has_gate_futures": true,
+    "futures": {
+      "oi_avg_before_usd": 98190.89270214287,
+      "oi_avg_now_usd": 1916203.4825108931,
+      "oi_change_x": 7.11356590853365,
+      "oi_usd_change_x": 19.515083627191373,
+      "oi_now_usd": 6115573.68936,
+      "oi_peak_usd": 9330406.6528,
+      "oi_drawdown_from_peak_pct": -34.45544318773338,
+      "lsr_taker_now": 1.7856846795502823,
+      "lsr_taker_max": 10.582491582491583,
+      "max_liq_usd": 237446.44182
+    },
+    "has_funding": true,
+    "funding": {
+      "avg_before_pct": 0.00711875,
+      "avg_now_pct": 0.003375,
+      "now_pct": -0.0838,
+      "max_pct": 0.1127,
+      "min_pct": -0.0838
+    }
+  },
+  {
+    "symbol": "BICO",
+    "spot_symbol": "BICOUSDT",
+    "gate_symbol": "BICO_USDT",
+    "has_spot": true,
+    "spot": {
+      "first_ts": 1785420000000,
+      "last_ts": 1786021200000,
+      "price_7d_ago": 0.01184,
+      "price_now": 0.03614,
+      "peak": 0.0368,
+      "peak_ts": 1786021200000,
+      "drawdown_from_peak_pct": -1.7934782608695632,
+      "chg_7d_pct": 205.23648648648648,
+      "vol_24h_usd": 17748321.380183198,
+      "vol_24h_avg_usd": 739513.3908409666,
+      "vol_prev_avg_usd": 349975.67671317025,
+      "vol_ratio_24h_vs_prev": 2.1130422484961717,
+      "launch": {
+        "ts": 1785700800000,
+        "launch_bar_vol_usd": 131309.7838278,
+        "launch_bar_chg_pct": 3.125000000000005,
+        "avg_vol_72h_before_usd": 17935.827545576383,
+        "launch_vol_mult": 7.321088669821968,
+        "pre24h_range_pct": 14.726027397260278
+      }
+    },
+    "has_gate_futures": true,
+    "futures": {
+      "oi_avg_before_usd": 158422.23853678574,
+      "oi_avg_now_usd": 2701531.9457459114,
+      "oi_change_x": 8.170573482182416,
+      "oi_usd_change_x": 17.052731805191694,
+      "oi_now_usd": 8932047.015252,
+      "oi_peak_usd": 9055458.636072,
+      "oi_drawdown_from_peak_pct": -1.3628423007576496,
+      "lsr_taker_now": 0.2581633066229104,
+      "lsr_taker_max": 72.73894361769021,
+      "max_liq_usd": 20506.084248000003
+    },
+    "has_funding": true,
+    "funding": {
+      "avg_before_pct": 0.01289375,
+      "avg_now_pct": 0.017134375000000004,
+      "now_pct": 0.08109999999999999,
+      "max_pct": 0.3382,
+      "min_pct": -0.10039999999999999
+    }
+  },
+  {
+    "symbol": "TUT",
+    "spot_symbol": "TUTUSDT",
+    "gate_symbol": "TUT_USDT",
+    "has_spot": true,
+    "spot": {
+      "first_ts": 1785420000000,
+      "last_ts": 1786021200000,
+      "price_7d_ago": 0.01467,
+      "price_now": 0.02775,
+      "peak": 0.03134,
+      "peak_ts": 1785992400000,
+      "drawdown_from_peak_pct": -11.455009572431397,
+      "chg_7d_pct": 89.16155419222905,
+      "vol_24h_usd": 8173885.18699,
+      "vol_24h_avg_usd": 340578.5494579167,
+      "vol_prev_avg_usd": 145418.67100756938,
+      "vol_ratio_24h_vs_prev": 2.3420551645681646
+    },
+    "has_gate_futures": true,
+    "futures": {
+      "oi_avg_before_usd": 2263139.7545571434,
+      "oi_avg_now_usd": 4913614.340382142,
+      "oi_change_x": 1.5406809734936675,
+      "oi_usd_change_x": 2.171149320534847,
+      "oi_now_usd": 8900265.8336,
+      "oi_peak_usd": 8900265.8336,
+      "oi_drawdown_from_peak_pct": 0.0,
+      "lsr_taker_now": 0.676470588235294,
+      "lsr_taker_max": 25.73913043478261,
+      "max_liq_usd": 5658.2304
+    },
+    "has_funding": true,
+    "funding": {
+      "avg_before_pct": 0.005000000000000002,
+      "avg_now_pct": 0.021628125,
+      "now_pct": 0.052,
+      "max_pct": 0.0889,
+      "min_pct": 0.005
+    }
+  },
+  {
+    "symbol": "SKYAI",
+    "spot_symbol": "SKYAIUSDT",
+    "gate_symbol": "SKYAI_USDT",
+    "has_spot": false,
+    "has_gate_futures": true,
+    "futures": {
+      "oi_avg_before_usd": 1556261.6781178575,
+      "oi_avg_now_usd": 4136799.0211625,
+      "oi_change_x": 1.3800856981459382,
+      "oi_usd_change_x": 2.6581641630895545,
+      "oi_now_usd": 7696847.704,
+      "oi_peak_usd": 8218504.016,
+      "oi_drawdown_from_peak_pct": -6.3473390167410715,
+      "lsr_taker_now": 0.3274336283185841,
+      "lsr_taker_max": 5.493137718883105,
+      "max_liq_usd": 122589.623
+    },
+    "has_funding": true,
+    "funding": {
+      "avg_before_pct": 0.0025937500000000006,
+      "avg_now_pct": 0.001471874999999999,
+      "now_pct": 0.005,
+      "max_pct": 0.039599999999999996,
+      "min_pct": -0.019799999999999998
+    }
+  },
+  {
+    "symbol": "CTSI",
+    "spot_symbol": "CTSIUSDT",
+    "gate_symbol": "CTSI_USDT",
+    "has_spot": true,
+    "spot": {
+      "first_ts": 1785420000000,
+      "last_ts": 1786021200000,
+      "price_7d_ago": 0.02222,
+      "price_now": 0.03653,
+      "peak": 0.03958,
+      "peak_ts": 1786017600000,
+      "drawdown_from_peak_pct": -7.705912076806465,
+      "chg_7d_pct": 64.40144014401442,
+      "vol_24h_usd": 8257681.15894,
+      "vol_24h_avg_usd": 344070.0482891667,
+      "vol_prev_avg_usd": 3674.9523598611104,
+      "vol_ratio_24h_vs_prev": 93.62571663437029,
+      "launch": {
+        "ts": 1785992400000,
+        "launch_bar_vol_usd": 201549.93224,
+        "launch_bar_chg_pct": 7.088036117381499,
+        "avg_vol_72h_before_usd": 1997.5267531944442,
+        "launch_vol_mult": 100.89974110117996,
+        "pre24h_range_pct": 4.496487119437931
+      }
+    },
+    "has_gate_futures": true,
+    "futures": {
+      "oi_avg_before_usd": 18298.60904785714,
+      "oi_avg_now_usd": 25661.07003374999,
+      "oi_change_x": 1.236222936830202,
+      "oi_usd_change_x": 1.4023508544631722,
+      "oi_now_usd": 223328.0944,
+      "oi_peak_usd": 223328.0944,
+      "oi_drawdown_from_peak_pct": 0.0,
+      "lsr_taker_now": 0.8098937140884319,
+      "lsr_taker_max": 28246.0,
+      "max_liq_usd": 10294.52814
+    },
+    "has_funding": true,
+    "funding": {
+      "avg_before_pct": 0.010000000000000004,
+      "avg_now_pct": 0.009756249999999996,
+      "now_pct": 0.01,
+      "max_pct": 0.01,
+      "min_pct": 0.0038000000000000004
+    }
+  },
+  {
+    "symbol": "HFT",
+    "spot_symbol": "HFTUSDT",
+    "gate_symbol": "HFT_USDT",
+    "has_spot": true,
+    "spot": {
+      "first_ts": 1785420000000,
+      "last_ts": 1786021200000,
+      "price_7d_ago": 0.008747,
+      "price_now": 0.03154,
+      "peak": 0.0325,
+      "peak_ts": 1786021200000,
+      "drawdown_from_peak_pct": -2.9538461538461624,
+      "chg_7d_pct": 260.5807705499028,
+      "vol_24h_usd": 19845759.5168833,
+      "vol_24h_avg_usd": 826906.6465368042,
+      "vol_prev_avg_usd": 164852.48307234302,
+      "vol_ratio_24h_vs_prev": 5.0160399839044505,
+      "launch": {
+        "ts": 1785729600000,
+        "launch_bar_vol_usd": 398794.0738145,
+        "launch_bar_chg_pct": 4.41076061723338,
+        "avg_vol_72h_before_usd": 10592.020724688888,
+        "launch_vol_mult": 37.6504242372707,
+        "pre24h_range_pct": 35.2958756724447
+      }
+    },
+    "has_gate_futures": true,
+    "futures": {
+      "oi_avg_before_usd": 58440.006143214305,
+      "oi_avg_now_usd": 275472.6233894642,
+      "oi_change_x": 2.697425330476172,
+      "oi_usd_change_x": 4.713767871864785,
+      "oi_now_usd": 1094665.51244,
+      "oi_peak_usd": 1094665.51244,
+      "oi_drawdown_from_peak_pct": 0.0,
+      "lsr_taker_now": 1.0955868888481963,
+      "lsr_taker_max": 2949.0588235294117,
+      "max_liq_usd": 73154.7366
+    },
+    "has_funding": true,
+    "funding": {
+      "avg_before_pct": 0.0014750000000000017,
+      "avg_now_pct": 0.013459375,
+      "now_pct": 0.11789999999999999,
+      "max_pct": 0.11789999999999999,
+      "min_pct": -0.0655
+    }
+  },
+  {
+    "symbol": "ZBT",
+    "spot_symbol": "ZBTUSDT",
+    "gate_symbol": "ZBT_USDT",
+    "has_spot": true,
+    "spot": {
+      "first_ts": 1785420000000,
+      "last_ts": 1786021200000,
+      "price_7d_ago": 0.1165,
+      "price_now": 0.154,
+      "peak": 0.1667,
+      "peak_ts": 1786017600000,
+      "drawdown_from_peak_pct": -7.618476304739041,
+      "chg_7d_pct": 32.18884120171672,
+      "vol_24h_usd": 14888553.671110002,
+      "vol_24h_avg_usd": 620356.4029629168,
+      "vol_prev_avg_usd": 51618.7787067361,
+      "vol_ratio_24h_vs_prev": 12.018037204781098,
+      "launch": {
+        "ts": 1785956400000,
+        "launch_bar_vol_usd": 664532.39719,
+        "launch_bar_chg_pct": 10.87786259541984,
+        "avg_vol_72h_before_usd": 43815.85391486112,
+        "launch_vol_mult": 15.166482855298389,
+        "pre24h_range_pct": 6.906614785992216
+      }
+    },
+    "has_gate_futures": true,
+    "futures": {
+      "oi_avg_before_usd": 710074.262010714,
+      "oi_avg_now_usd": 743397.5036928572,
+      "oi_change_x": 1.0292187321582886,
+      "oi_usd_change_x": 1.0469292346800205,
+      "oi_now_usd": 1309507.4606,
+      "oi_peak_usd": 1309884.354,
+      "oi_drawdown_from_peak_pct": -0.028773028615003415,
+      "lsr_taker_now": 0.559651352823679,
+      "lsr_taker_max": 2.2226047904191617,
+      "max_liq_usd": 3640.95
+    },
+    "has_funding": true,
+    "funding": {
+      "avg_before_pct": 0.010000000000000004,
+      "avg_now_pct": 0.009999999999999995,
+      "now_pct": 0.01,
+      "max_pct": 0.01,
+      "min_pct": 0.01
+    }
+  },
+  {
+    "symbol": "DODO",
+    "spot_symbol": "DODOUSDT",
+    "gate_symbol": "DODO_USDT",
+    "has_spot": true,
+    "spot": {
+      "first_ts": 1785420000000,
+      "last_ts": 1786021200000,
+      "price_7d_ago": 0.01812,
+      "price_now": 0.0236,
+      "peak": 0.03281,
+      "peak_ts": 1785992400000,
+      "drawdown_from_peak_pct": -28.070710149344713,
+      "chg_7d_pct": 30.242825607064017,
+      "vol_24h_usd": 21490321.752596,
+      "vol_24h_avg_usd": 895430.0730248332,
+      "vol_prev_avg_usd": 58630.20625198612,
+      "vol_ratio_24h_vs_prev": 15.272504230607243,
+      "launch": {
+        "ts": 1785956400000,
+        "launch_bar_vol_usd": 3181803.949108,
+        "launch_bar_chg_pct": 37.15817694369972,
+        "avg_vol_72h_before_usd": 58565.381060416665,
+        "launch_vol_mult": 54.32909154685799,
+        "pre24h_range_pct": 4.991680532445919
+      }
+    },
+    "has_gate_futures": true,
+    "has_funding": true
+  },
+  {
+    "symbol": "UTK",
+    "spot_symbol": "UTKUSDT",
+    "gate_symbol": "UTK_USDT",
+    "has_spot": true,
+    "spot": {
+      "first_ts": 1775570400000,
+      "last_ts": 1776171600000,
+      "price_7d_ago": 0.00668,
+      "price_now": 0.00795,
+      "peak": 0.0244,
+      "peak_ts": 1776132000000,
+      "drawdown_from_peak_pct": -67.41803278688525,
+      "chg_7d_pct": 19.011976047904188,
+      "vol_24h_usd": 10207453.253340002,
+      "vol_24h_avg_usd": 425310.5522225001,
+      "vol_prev_avg_usd": 15971.493127777774,
+      "vol_ratio_24h_vs_prev": 26.629354489267875,
+      "launch": {
+        "ts": 1776132000000,
+        "launch_bar_vol_usd": 4912233.51635,
+        "launch_bar_chg_pct": 178.0898876404495,
+        "avg_vol_72h_before_usd": 20132.27296347222,
+        "launch_vol_mult": 243.99795916053313,
+        "pre24h_range_pct": 7.71513353115727
+      }
+    },
+    "has_gate_futures": false,
+    "has_funding": false
+  },
+  {
+    "symbol": "SYN",
+    "spot_symbol": "SYNUSDT",
+    "gate_symbol": "SYN_USDT",
+    "has_spot": true,
+    "spot": {
+      "first_ts": 1785420000000,
+      "last_ts": 1786021200000,
+      "price_7d_ago": 0.11875,
+      "price_now": 0.12857,
+      "peak": 0.148,
+      "peak_ts": 1785963600000,
+      "drawdown_from_peak_pct": -13.12837837837838,
+      "chg_7d_pct": 8.269473684210515,
+      "vol_24h_usd": 15125866.479864,
+      "vol_24h_avg_usd": 630244.436661,
+      "vol_prev_avg_usd": 242799.90240406257,
+      "vol_ratio_24h_vs_prev": 2.595735955495403,
+      "launch": {
+        "ts": 1785855600000,
+        "launch_bar_vol_usd": 714214.400223,
+        "launch_bar_chg_pct": 11.476919534937254,
+        "avg_vol_72h_before_usd": 121289.00376844445,
+        "launch_vol_mult": 5.888533816194275,
+        "pre24h_range_pct": 7.330468003820423
+      }
+    },
+    "has_gate_futures": true,
+    "has_funding": true
+  }
+]
