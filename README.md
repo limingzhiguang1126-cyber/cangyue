@@ -165,6 +165,48 @@ python -m pytest tests/ -v
 - 方式 B：`docker compose up -d`（含 RSSHub）
 - 进程管理：systemd unit 示例见 `docker/fin-alert.service`
 
+## ☁️ 云端部署（免费 · 无需自购服务器）
+
+不想本地跑 / 不想买服务器？直接用 **CNB 云原生构建的定时任务**即可：
+代码跑在 CNB 云端构建机上，由平台调度，**免费稳定**，无需 7x24 常驻进程。
+
+### 已配置的云端任务（`.cnb.yml`）
+
+| 任务 | 频率 | 说明 |
+|---|---|---|
+| `refresh-pool` | 每天 07:35 | 刷新 `data/smallcap_top100_fdv.json`（FDV 最小 Top100）并自动提交 |
+| `v11-signal-scan` | 每 15 分钟 | 扫描候选池，命中 v1.1 信号推送 Telegram，并把去重状态回推仓库 |
+
+### 启用步骤（约 3 分钟）
+
+1. **创建密钥仓库**（存 Telegram 凭据，绝不写进公开仓库）
+   - 打开 [https://cnb.cool/new/repos](https://cnb.cool/new/repos)，仓库类型选 **`密钥仓库`**，名称如 `cangyue-secrets`
+   - 新建文件 `telegram.yml`，内容：
+     ```yaml
+     TELEGRAM_BOT_TOKEN: "你的 bot token"
+     TELEGRAM_CHAT_ID: "你的 chat_id"
+     ```
+2. **修改 `.cnb.yml`**：把两处 `imports` 里的
+   `https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml`
+   替换成你自己的密钥仓库路径后合并到 `main`。
+3. **确认设置**：仓库 `设置 → 云原生构建` 中「允许定时任务自动触发」已开启
+   （本仓库默认已开启，见 `cnb git-settings get-pipeline-settings`）。
+4. 定时任务配置合并后即生效，无需任何常驻进程。
+
+### 本地调试
+
+```bash
+# 单轮扫描 + 推送（不常驻，等价于云端每次拉起）
+python scripts/v11_cloud_run.py --top 100 --push-state
+
+# 只打印不推送
+TELEGRAM_BOT_TOKEN= TELEGRAM_CHAT_ID= python scripts/v11_cloud_run.py --top 10
+```
+
+> ⚠️ 说明：CNB 定时任务最小间隔为 5 分钟；此处按 v1.1 标准设计为 15 分钟轮询。
+> 状态持久化依赖流水线把 `data/v11_signal_state.json` 推回仓库；
+> 若回推失败（如并发冲突）仅影响「去重」，不影响「推送」，属优雅降级。
+
 ## 🔗 相关链接
 
 - 需求 Issue：[qiang26/cangyue#1](https://cnb.cool/qiang26/cangyue/-/issues/1)

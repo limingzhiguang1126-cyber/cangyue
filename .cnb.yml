@@ -1,0 +1,56 @@
+# ============================================================
+# CNB 云原生构建 · 定时任务流水线
+# 用途：让 v1.1 信号扫描 + Telegram 推送跑在 CNB 云端（无需自购服务器）
+#
+#  1) 每天 07:35 刷新候选池 smallcap_top100_fdv.json（FDV 最小 Top100）
+#  2) 每 15 分钟（*/15）扫描候选池，命中 v1.1 信号推送 Telegram
+#     （CNB 定时任务最小间隔为 5 分钟，此处按 v1.1 标准设为 15 分钟轮询节奏）
+#
+# 敏感信息（TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID）通过密钥仓库注入，
+# 请按 README「云端部署」一节创建密钥仓库后，
+# 将下方 imports 中的密钥仓库路径替换为你自己的，然后合并本文件。
+# ============================================================
+
+main:
+  # ---- 每日刷新候选池 ----
+  "crontab: 35 7 * * *":
+    - name: refresh-pool
+      docker:
+        image: python:3.11-slim
+      imports:
+        # TODO: 替换为你的密钥仓库路径（见 README「云端部署」）
+        - https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml
+      stages:
+        - name: install-deps
+          script: pip install -q -r requirements.txt
+        - name: refresh-smallcap-pool
+          script: |
+            python -m src.screener.binance_smallcap --top 100 --sort fdv \
+              --output data/smallcap_top100_fdv.json
+        - name: commit-and-push-pool
+          script: |
+            set -e
+            git config user.name "cnb"
+            git config user.email "cnb@cnb.cool"
+            git add data/smallcap_top100_fdv.json
+            if git diff --cached --quiet; then
+              echo "pool unchanged, skip commit"
+            else
+              git commit -m "chore(screener): 刷新 FDV Top100 候选池 [cron]"
+              git push "https://cnb:${CNB_TOKEN}@cnb.cool/${CNB_REPO_SLUG}.git" HEAD:main
+            fi
+
+  # ---- 每 15 分钟扫描 + 推送信号 ----
+  "crontab: */15 * * * *":
+    - name: v11-signal-scan
+      docker:
+        image: python:3.11-slim
+      imports:
+        # TODO: 替换为你的密钥仓库路径（见 README「云端部署」）
+        - https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml
+      stages:
+        - name: install-deps
+          script: pip install -q -r requirements.txt
+        - name: scan-and-push
+          script: |
+            python scripts/v11_cloud_run.py --top 100 --push-state
