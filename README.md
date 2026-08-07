@@ -275,3 +275,32 @@ python scripts/tg_test_push.py --token 123456:ABC... --chat 654321
 
 在自己能访问 Telegram 的电脑/服务器上常驻运行 `v11_signal_daemon`（每 15 分钟轮询 + 推送），
 不依赖 CNB 云端网络。
+
+**方案 D：Hugging Face Space（海外免费托管，推荐）**
+
+把整个信号监控部署到 Hugging Face Space（海外免费服务器），它位于海外网络，**可直连 `api.telegram.org`**，
+天然解决被墙问题，无需自购服务器、无需长开本地电脑：
+
+```bash
+# 1) 安装部署依赖
+pip install huggingface_hub>=0.23
+
+# 2) 配置 HF 凭据
+#    HF_TOKEN: https://huggingface.co/settings/tokens 新建（需 write 权限）
+export HF_TOKEN=hf_xxx
+export HF_USER=你的HF用户名
+
+# 3) 一键部署（首次自动创建 Space + 上传全部文件，之后改代码重跑即可）
+python scripts/deploy_hf.py --space-name fin-alert --deploy
+
+# 4) 到 Space 的 Settings → Variables and secrets 填入：
+#    TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID
+```
+
+部署文件位于 `deploy/hf_space/`（`Dockerfile` + `app.py` + `README.md`），
+`app.py` 会同时运行 Web 健康检查（防止 Space 休眠）和每 15 分钟一论的 v1.1 信号扫描 + Telegram 推送。
+详见 [deploy/hf_space/README.md](deploy/hf_space/README.md)。
+
+> ⚠️ 免费 Space 有 48h 无流量休眠策略，页面已内置心跳尽量保活；休眠后打开一次页面即可唤醒。
+> 候选池 `data/smallcap_top100_fdv.json` 随仓库一起部署，可定期重新部署刷新，
+> 或后续在 HF 侧配置定时任务刷新（见 deploy/hf_space/README.md）。
