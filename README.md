@@ -275,3 +275,56 @@ python scripts/tg_test_push.py --token 123456:ABC... --chat 654321
 
 在自己能访问 Telegram 的电脑/服务器上常驻运行 `v11_signal_daemon`（每 15 分钟轮询 + 推送），
 不依赖 CNB 云端网络。
+
+**方案 D：Hugging Face Space（海外免费托管，推荐）**
+
+把整个信号监控部署到 Hugging Face Space（海外免费服务器），它位于海外网络，**可直连 `api.telegram.org`**，
+天然解决被墙问题，无需自购服务器、无需长开本地电脑。
+
+> 🚀 最省事的方式：在 CNB 仓库「代码 → 分支详情页」点 **「🚀 部署 HF Space」** 按钮，
+> 只需在密钥仓库 `cangyue-secrets/telegram.yml` 里加一行 `HF_TOKEN: "hf_xxx"`，
+> 平台会自动创建 Space、上传代码、并把 Telegram 凭据写入 Space secrets，无需在 HF 网页上手动操作。
+
+### 方式一：CNB 网页按钮（推荐，只需一个 HF Token）
+
+1. 打开 https://huggingface.co/settings/tokens 新建一个 **Read/write** 权限的 token（`hf_...`）
+2. 在密钥仓库 `qiang26/cangyue-secrets` 的 `telegram.yml` 里加一行：
+   ```yaml
+   TELEGRAM_BOT_TOKEN: "你的 bot token"
+   TELEGRAM_CHAT_ID: "你的 chat_id"
+   HF_TOKEN: "hf_你的HF令牌"
+   ```
+3. 回到本仓库 **代码 → 分支详情页**，点右上角 **「🔔 手动触发 → 🚀 部署 HF Space」**
+4. 等 3~5 分钟，构建日志出现 `✅ 部署完成` 即成功，HF 会自动开始构建
+5. 打开 `https://huggingface.co/spaces/{你的用户名}/fin-alert` 查看状态
+
+### 方式二：本地命令行一键部署
+
+```bash
+# 1) 安装部署依赖
+pip install huggingface_hub>=0.23
+
+# 2) 配置 HF 凭据
+#    HF_TOKEN: https://huggingface.co/settings/tokens 新建（需 write 权限）
+export HF_TOKEN=hf_xxx
+
+# 3) 一键部署（首次自动创建 Space + 上传全部文件 + 写入 Telegram secrets）
+python scripts/deploy_hf.py --space-name fin-alert --deploy \
+    --tg-token 你的bot_token --tg-chat 你的chat_id
+
+# 不想在命令行传 Telegram 凭据也可以：HF 用户名可自动探测，之后在 Space 设置里手动填
+```
+
+### 运行逻辑
+
+- `app.py` 启动后：
+  1. **自动刷新候选池**（从本 CNB 仓库拉最新 `data/smallcap_top100_fdv.json`，默认每 24h 一次）
+  2. 后台守护线程每 `HF_POLL_INTERVAL`（默认 15）分钟跑一轮 **v1.2** 信号扫描（FDV Top100 候选池）
+  3. 命中信号即推送 Telegram（复用 `src/notifier/telegram_notifier.py`，海外直连 `api.telegram.org`）
+  4. Web 服务监听 `$PORT`（默认 7860），响应 HF 健康检查心跳，避免 Space 休眠
+
+部署文件位于 `deploy/hf_space/`（`Dockerfile` + `app.py` + `README.md`），详见 [deploy/hf_space/README.md](deploy/hf_space/README.md)。
+
+> ⚠️ 免费 Space 有 48h 无流量休眠策略，页面已内置心跳尽量保活；休眠后打开一次页面即可唤醒。
+> 候选池默认 24h 自动从仓库刷新；Space 重启（更新部署）时也会重新拉取。
+> Telegram 凭据只写入 Space secrets，绝不进入公开仓库，安全可靠。
