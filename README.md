@@ -167,8 +167,52 @@ python -m pytest tests/ -v
 
 ## ☁️ 云端部署（免费 · 无需自购服务器）
 
-不想本地跑 / 不想买服务器？直接用 **CNB 云原生构建的定时任务**即可：
+不想本地跑 / 不想买服务器？有两条免费云端路线可选：
+
+| 路线 | 免费额度 | 直连 Telegram | 适用场景 |
+|---|---|---|---|
+| **A. GitHub Actions（推荐）** | public 仓库完全免费、分钟数无限 | ✅ 海外 Runner 直连 | 每 15 分钟扫一轮 + 推送（任务型，正合适） |
+| **B. CNB 云原生定时任务** | 免费 | ❌ 需海外 Bot API 代理 | 想留在 CNB 平台内，可接受配代理 |
+
+---
+
+### 路线 A：GitHub Actions（推荐）
+
+已内置两个工作流（`.github/workflows/`），代码推到 GitHub 后自动生效：
+
+| 工作流 | 频率 | 说明 |
+|---|---|---|
+| `signal-scan.yml` | 每 15 分钟 | 扫描 FDV Top100 候选池，命中 v1.2 信号推送 Telegram，并把去重状态回推仓库 |
+| `refresh-pool.yml` | 每天 07:35 | 刷新 `data/smallcap_top100_fdv.json` 并自动提交 |
+
+**启用步骤（约 5 分钟）**：
+
+1. 把本仓库代码推到你的 GitHub（见下文「推送到 GitHub」）
+2. 在 GitHub 仓库 **Settings → Secrets and variables → Actions → New repository secret** 添加：
+   - `TELEGRAM_BOT_TOKEN`：@BotFather 创建 Bot 的 token
+   - `TELEGRAM_CHAT_ID`：你的用户 ID（@userinfobot 可查）
+   - （可选）`TELEGRAM_API_BASE`：若 Telegram 直连异常，填海外 Bot API 代理地址
+3. 添加后 Actions 即自动按 cron 运行；也可以到 **Actions 页面 → 对应工作流 → Run workflow** 手动触发一轮（可调扫描数量 / dry-run）
+
+> ✅ GitHub 托管 Runner 在海外，直连 `api.telegram.org` 无墙，**不需要** Telegram 代理。
+> ⚠️ 免费仓库的 cron 可能被延迟数分钟执行，但对「15 分钟一轮的信号扫描」完全够用。
+
+**本地手动跑一轮（等价于 GitHub 每轮拉起）**：
+
+```bash
+# 真实扫描 + 推送 + 回推去重状态
+python scripts/v11_cloud_run.py --top 100 --push-state
+
+# 只打印不推送（dry-run）
+python scripts/v11_cloud_run.py --top 100 --dry-run
+```
+
+---
+
+### 路线 B：CNB 云原生定时任务
+
 代码跑在 CNB 云端构建机上，由平台调度，**免费稳定**，无需 7x24 常驻进程。
+（注意：CNB 构建机在国内，直连 Telegram 被墙，需配海外 Bot API 代理，见下文「电报推送网络问题」。）
 
 ### 已配置的云端任务（`.cnb.yml`）
 
@@ -226,6 +270,25 @@ TELEGRAM_BOT_TOKEN= TELEGRAM_CHAT_ID= python scripts/v11_cloud_run.py --top 10
 ## 🔗 相关链接
 
 - 需求 Issue：[qiang26/cangyue#1](https://cnb.cool/qiang26/cangyue/-/issues/1)
+
+## 🚀 推送到 GitHub（走 GitHub Actions 的前置步骤）
+
+在 GitHub 上新建一个**空仓库**（`New repository`，可勾选 Private，Actions 一样免费），然后在**你的电脑**上执行：
+
+```bash
+cd cangyue                                  # 进入本地仓库目录
+# 1) 添加 GitHub 远程（改成你自己的用户名/仓库名）
+git remote add github https://github.com/你的用户名/cangyue.git
+# 2) 推送到 GitHub（输入 GitHub 用户名 + Personal Access Token 作为密码）
+git push github main
+```
+
+> 💡 如何生成 GitHub Token：GitHub 头像 → **Settings → Developer settings → Personal access tokens → Tokens (classic)** → Generate new token，勾选 `repo` 权限，复制 `ghp_...`。推送时用户名填 GitHub 用户名，密码填这个 token。
+
+推送成功后：
+1. GitHub 仓库会**自动识别** `.github/workflows/` 下的两个工作流
+2. 到 **Settings → Secrets and variables → Actions** 添加 `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`
+3. 到 **Actions** 页手动 Run workflow 一次验证，之后按 cron 自动运行
 
 ## ⚠️ 电报推送网络问题（重要）
 

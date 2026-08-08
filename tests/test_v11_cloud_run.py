@@ -128,6 +128,55 @@ def test_push_state_without_token_returns_false():
         assert cloud.push_state("/tmp/nonexist-state.json") is False
 
 
+def test_gh_push_url_absent_outside_gh():
+    """非 GitHub Actions 环境：_gh_push_url 返回 None。"""
+    with mock.patch.dict(os.environ, {"GITHUB_ACTIONS": "true"}, clear=True):
+        assert cloud._gh_push_url() is None  # 无 GITHUB_TOKEN / GITHUB_REPOSITORY
+
+
+def test_gh_push_url_present_in_gh():
+    """GitHub Actions 环境：_gh_push_url 生成带 GITHUB_TOKEN 的推送地址。"""
+    with mock.patch.dict(
+        os.environ,
+        {"GITHUB_ACTIONS": "true", "GITHUB_TOKEN": "gh_xxx",
+         "GITHUB_REPOSITORY": "myuser/cangyue"},
+        clear=True,
+    ):
+        url = cloud._gh_push_url()
+        assert url == "https://x-access-token:gh_xxx@github.com/myuser/cangyue.git"
+
+
+def test_push_state_uses_gh_url_in_gh_actions():
+    """GitHub Actions 环境下 push_state 走 GITHUB_TOKEN 推送，不依赖 CNB_TOKEN。"""
+    with mock.patch.dict(
+        os.environ,
+        {"GITHUB_ACTIONS": "true", "GITHUB_TOKEN": "gh_xxx",
+         "GITHUB_REPOSITORY": "myuser/cangyue", "GITHUB_REF_NAME": "main"},
+        clear=True,
+    ):
+        with mock.patch.object(cloud.subprocess, "run") as m_run:
+            proc = mock.Mock()
+            proc.returncode = 0
+            m_run.return_value = proc
+            ok = cloud.push_state("/tmp/state.json")
+    assert ok is True
+    # 推送到 github 地址，而非 cnb 地址
+    set_url_calls = [c for c in m_run.call_args_list
+                     if c.args and c.args[0] == ["git", "remote", "set-url", "origin",
+                                                  "https://x-access-token:gh_xxx@github.com/myuser/cangyue.git"]]
+    assert set_url_calls, m_run.call_args_list
+
+
+def test_push_state_gh_no_token_returns_false():
+    """GitHub Actions 但缺 GITHUB_TOKEN：push_state 返回 False（优雅降级）。"""
+    with mock.patch.dict(
+        os.environ,
+        {"GITHUB_ACTIONS": "true", "GITHUB_REPOSITORY": "myuser/cangyue"},
+        clear=True,
+    ):
+        assert cloud.push_state("/tmp/nonexist-state.json") is False
+
+
 def test_run_round_dry_run_does_not_push_or_push_state():
     """dry-run 模式：即使配了 Telegram 密钥也不推送，且不触发状态回推。"""
     pool = [{"symbol": "A"}]
