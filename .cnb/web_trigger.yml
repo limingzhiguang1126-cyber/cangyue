@@ -41,3 +41,14 @@ branch:
         description: "向你的 Telegram 发一条测试消息，验证推送链路是否打通（同时诊断云端能否访问 api.telegram.org）"
         event: web_trigger_test_push
         groupName: "🔔 手动触发"
+      - name: "🚀 部署 HF Space"
+        description: "把信号监控部署到 Hugging Face Space（海外免费托管，直连 Telegram）。需在密钥仓库 telegram.yml 配置 HF_TOKEN"
+        event: web_trigger_deploy_hf
+        groupName: "🚀 部署 HF Space"
+        isDefault: false
+        inputs:
+          space_name:
+            name: "Space 名称"
+            type: input
+            default: "fin-alert"
+            description: "Hugging Face Space 名称（默认 fin-alert）"

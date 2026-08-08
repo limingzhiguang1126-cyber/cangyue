@@ -22,7 +22,7 @@ COPY data ./data
 COPY config ./config
 COPY .env.example .
 
-# 3) HF Space 入口（web 健康检查 + v1.1 信号守护线程）
+# 3) HF Space 入口（web 健康检查 + v1.2 信号守护线程）
 COPY deploy/hf_space/app.py ./app.py
 
 # HF Spaces 默认监听端口（由平台注入 $PORT，默认 7860）

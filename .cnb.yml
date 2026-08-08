@@ -118,3 +118,34 @@ $:
           script: |
             echo "[web_trigger] Telegram 推送链路测试"
             python scripts/tg_test_push_cloud.py
+
+  web_trigger_deploy_hf:
+    - name: deploy-hf-space
+      docker:
+        image: python:3.11-slim
+      imports:
+        - https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml
+      stages:
+        - name: install-deps
+          script: |
+            pip install -q -r requirements.txt
+            pip install -q "huggingface_hub>=0.23"
+        - name: deploy-to-hf
+          script: |
+            set -e
+            SPACE="${space_name:-fin-alert}"
+            echo "[web_trigger] 部署 HF Space: ${SPACE}"
+            if [ -z "${HF_TOKEN:-}" ]; then
+              echo "错误：密钥仓库 telegram.yml 中未配置 HF_TOKEN（hf_...）"
+              echo "请先到 https://huggingface.co/settings/tokens 新建 Read/write 令牌，"
+              echo "然后添加到 qiang26/cangyue-secrets 仓库的 telegram.yml："
+              echo '  HF_TOKEN: "hf_你的令牌"'
+              exit 1
+            fi
+            python scripts/deploy_hf.py --space-name "${SPACE}" --deploy \
+              --tg-token "${TELEGRAM_BOT_TOKEN:-}" --tg-chat "${TELEGRAM_CHAT_ID:-}"
+        - name: print-result
+          script: |
+            echo "✅ 部署完成！请到 Hugging Face 查看构建状态："
+            echo "   https://huggingface.co/spaces/fin-alert"
+            echo "（用户名请以 HF 实际账号为准）"

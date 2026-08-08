@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Hugging Face Space 入口：Web 健康检查 + v1.1 信号轮询守护线程。
+"""Hugging Face Space 入口：Web 健康检查 + v1.2 信号轮询守护线程。
 
 在海外 Space 上运行，可直连 api.telegram.org，解决 CNB 国内构建机推送被墙问题。
+
+运行逻辑：
+1. 启动时尝试刷新候选池（从 CNB 仓库拉最新 data/smallcap_top100_fdv.json），
+   失败则沿用随部署上传的池子（优雅降级）
+2. 后台守护线程每 HF_POLL_INTERVAL（默认 15）分钟跑一轮 v1.2 信号扫描，
+   命中信号即推送到 Telegram
+3. Web 服务监听 $PORT（默认 7860），响应 HF 健康检查心跳，避免 Space 休眠
 """
 
 from __future__ import annotations
@@ -9,8 +16,10 @@ from __future__ import annotations
 import json
 import logging
 import os
+import subprocess
 import threading
 import time
+import urllib.request
 
 import requests
 
@@ -29,13 +38,20 @@ DATA_DIR = os.path.join(BASE_DIR, "data")
 POOL_PATH = os.path.join(DATA_DIR, "smallcap_top100_fdv.json")
 STATE_PATH = os.path.join(DATA_DIR, "v11_signal_state.json")
 
-# ---- 配置（来自 Space Secrets）----
+# ---- 配置（来自 Space Secrets / Variables）----
 TG_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 TG_CHAT = os.getenv("TELEGRAM_CHAT_ID", "")
 POLL_INTERVAL = int(os.getenv("HF_POLL_INTERVAL", "15"))  # 分钟
+POOL_REFRESH_INTERVAL = int(os.getenv("HF_POOL_REFRESH_INTERVAL", "1440"))  # 分钟，默认 24h
 TOP = int(os.getenv("HF_TOP", "100"))
 WORKERS = int(os.getenv("HF_WORKERS", "8"))
 PORT = int(os.getenv("PORT", "7860"))
+
+# 候选池远端地址（CNB 仓库 raw，公开可读）
+CNB_POOL_URL = os.getenv(
+    "HF_POOL_URL",
+    "https://cnb.cool/qiang26/cangyue/-/git/raw/main/data/smallcap_top100_fdv.json",
+)
 
 _latest: dict = {"status": "initializing"}
 _lock = threading.Lock()
@@ -43,13 +59,34 @@ _lock = threading.Lock()
 _notifier: TelegramNotifier | None = None
 if TG_TOKEN and TG_CHAT:
     _notifier = TelegramNotifier(bot_token=TG_TOKEN, chat_id=TG_CHAT)
-    logger.info("telegram notifier ready")
+    logger.info("telegram notifier ready（命中即推送）")
 else:
     logger.warning("TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID 未配置，仅打印命中（不推送）")
 
 
+def refresh_pool() -> bool:
+    """从 CNB 仓库拉最新候选池，覆盖本地文件。失败则沿用旧池子（优雅降级）。"""
+    try:
+        logger.info("refreshing pool from %s", CNB_POOL_URL)
+        with urllib.request.urlopen(CNB_POOL_URL, timeout=60) as resp:
+            data = resp.read().decode("utf-8")
+        parsed = json.loads(data)
+        if not isinstance(parsed, list) or not parsed:
+            raise ValueError("远端候选池格式异常")
+        os.makedirs(DATA_DIR, exist_ok=True)
+        tmp = POOL_PATH + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            f.write(data)
+        os.replace(tmp, POOL_PATH)
+        logger.info("pool refreshed: %d symbols", len(parsed))
+        return True
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("pool refresh failed (use bundled pool): %s", exc)
+        return False
+
+
 def _run_round() -> None:
-    """跑一轮 v1.1 信号扫描并推送。"""
+    """跑一轮 v1.2 信号扫描并推送。"""
     global _latest
     try:
         if not os.path.exists(POOL_PATH):
@@ -98,18 +135,25 @@ def _run_round() -> None:
 
 
 def _loop() -> None:
-    """常驻轮询：先跑一轮，再按间隔循环。"""
+    """常驻轮询：启动先刷新池子 + 跑一轮，再按间隔循环。"""
+    refresh_pool()
     _run_round()
+    next_refresh = time.time() + POOL_REFRESH_INTERVAL * 60
     while True:
         time.sleep(POLL_INTERVAL * 60)
         _run_round()
+        if time.time() >= next_refresh:
+            refresh_pool()
+            next_refresh = time.time() + POOL_REFRESH_INTERVAL * 60
 
 
 def _health(app) -> None:
     """心跳端点：HF 访问即认为活跃，尽量防止 Space 休眠。"""
     try:
         with _lock:
-            body = {"status": "ok", "latest": _latest}
+            body = {"status": "ok", "latest": _latest,
+                    "poll_interval_min": POLL_INTERVAL, "top": TOP,
+                    "notifier_ready": _notifier is not None}
         r = requests.get("https://api.telegram.org", timeout=8)
         body["tg_reachable"] = r.status_code < 500
     except Exception:
@@ -133,7 +177,8 @@ def main() -> None:
     thread.start()
 
     server = http.server.ThreadingHTTPServer(("0.0.0.0", PORT), handler)
-    logger.info("listening on %s, poll interval %d min, top %d", PORT, POLL_INTERVAL, TOP)
+    logger.info("listening on %s, poll interval %d min, top %d",
+                PORT, POLL_INTERVAL, TOP)
     server.serve_forever()
 
 
