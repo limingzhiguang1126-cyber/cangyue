@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-"""v1.1 选币标准 · 实时信号监视器（Launch Signal Watcher）。
+"""v1.2 选币标准 · 实时信号监视器（Launch Signal Watcher）。
 
 在「线 1 候选池」（Top100 小市值，`data/smallcap_top100_fdv.json`）内，
-按 2026-08-07 讨论定稿的 **v1.1 标准** 对每个标的做实时判定，命中即输出
+按 2026-08-08 定稿的 **v1.2 标准**（v1.1 + 阈值调整）对每个标的做实时判定，命中即输出
 结构化信号（含命中原因 + 观察/建仓建议），供守护进程推送到 Telegram。
 
-## v1.1 标准（讨论稿 + 回测修正）
+## v1.2 标准（v1.1 + 用户确认的调整，2026-08-08）
 
 | 信号线 | 触发条件 | 动作 |
 |---|---|---|
-| 🔔 通知线① | 5m 涨幅 ≥ +10%（收盘口径） | 立即通知 + 进观察；叠加确认(量≥3x+OI≥1.15x+费率正常)才可小仓 |
-| 🔔 主信号② | 4h 涨幅 ≥ +30% 且距本波高点回撤 < 20% | 通知 + 重点分析；OI 同步放大(≥1.15x)可建仓，否则降级观察 |
-| 📡 辅助线③ | 4h 涨幅 3%~10% 且 4h 量能 ≥ 5x | 提前埋伏观察 |
-| ⛔ 一票否决 | 资金费率 > +0.3% 或 < -0.1%（v1.1 已放宽上限）/ OI 较峰值回落 > 30% | 命中信号也不碰 |
+| 🔔 通知线① | 5m 涨幅 ≥ +6%（收盘口径）且距 4h 本波高点回撤 > -3% | 立即通知 + 进观察；叠加确认(量≥3x+OI≥1.15x+费率正常)才可小仓 |
+| 🔔 主信号② | 4h 涨幅 ≥ +15% 且距本波高点回撤 < 20% | 通知 + 重点分析；OI 同步放大(≥1.15x)可建仓，否则降级观察 |
+| 📡 辅助线③ | 4h 涨幅 2%~8% 且 4h 量能 ≥ 3x、OI 放大≥1.15x | 提前埋伏观察 |
+| ⛔ 一票否决 | 资金费率 > +0.3% 或 < -1.0%（负费率放宽到 -1%）/ OI 较峰值回落 > 30%（辅助线③暂缓） | 命中信号也不碰 |
 | 🧪 假启动排除 | 主信号② 触发时 OI 未同步放大（< 1.15x） | 降级为观察 |
 
 数据源（币安官方，fapi 经 CORS 代理）：
@@ -117,17 +117,18 @@ def _fetch_funding(symbol: str, limit: int = 30) -> List[Dict[str, Any]]:
 
 
 # ---------------------------------------------------------------------------
-# v1.1 标准阈值
+# v1.2 标准阈值
 # ---------------------------------------------------------------------------
-SIGNAL_5M_MIN = 10.0          # 通知线①：5m 收盘涨幅 ≥ +10%
-SIGNAL_4H_MIN = 30.0          # 主信号②：4h 涨幅 ≥ +30%
+SIGNAL_5M_MIN = 6.0           # v1.2：通知线① 5m 涨幅门槛降到 +6%（更早捕捉启动）
+SIGNAL_5M_DD_MAX = -3.0       # v1.2：通知线① 附加过滤——距 4h 本波高点回撤 > -3% 才有效（避开冲高回落追山顶）
+SIGNAL_4H_MIN = 15.0          # v1.2：主信号② 4h 涨幅门槛降到 +15%（小市值真实启动段）
 DRAWDOWN_MAX = 20.0           # 主信号②：距本波高点回撤 < 20%
-AUX_4H_MIN = 3.0              # 辅助线③：4h 涨幅 ≥ +3%
-AUX_4H_MAX = 10.0             # 辅助线③：4h 涨幅 ≤ +10%
-AUX_VOL_X = 5.0               # 辅助线③：4h 量能 ≥ 前24h均量 5x
-VETO_FUNDING_HIGH = 0.30      # v1.1：费率过热上限放宽到 +0.3%（回测修正，避免误杀 HFT 式主升）
-VETO_FUNDING_LOW = -0.10      # v1.1：费率下限 -0.1%（负费率才是出货信号）
-VETO_OI_DRAWDOWN = 30.0       # 一票否决：OI 较峰值回落 > 30%
+AUX_4H_MIN = 2.0              # v1.2：辅助线③ 4h 涨幅降到 2%
+AUX_4H_MAX = 8.0              # v1.2：辅助线③ 4h 涨幅上限降到 8%
+AUX_VOL_X = 3.0               # v1.2：辅助线③ 4h 量能门槛降到 3x
+VETO_FUNDING_HIGH = 0.30      # v1.2：费率过热上限 +0.3%（避免误杀 HFT 式主升）
+VETO_FUNDING_LOW = -1.00      # v1.2：负费率一票否决放宽到 -1%（仅深负费率才视为出货信号）
+VETO_OI_DRAWDOWN = 30.0       # 一票否决：OI 较峰值回落 > 30%（辅助线③暂缓）
 FAKE_LAUNCH_OI_MIN = 1.15     # 假启动排除：主信号② 触发时 OI 放大 < 1.15x 降级观察
 CONFIRM_VOL_X = 3.0           # 通知线① 上小仓确认：5m 量能 ≥ 3x
 
@@ -140,7 +141,7 @@ ACTION_ORDER = {"build": 0, "watch": 1, "observe": 2, "none": 3}
 
 
 def evaluate_symbol(base: str, futures_map: Dict[str, str]) -> Dict[str, Any]:
-    """对单个标的按 v1.1 标准做实时判定。
+    """对单个标的按 v1.2 标准做实时判定。
 
     Args:
         base: 候选池里的 base symbol（如 "BICO"）。
@@ -206,7 +207,9 @@ def evaluate_symbol(base: str, futures_map: Dict[str, str]) -> Dict[str, Any]:
 
     # ---- 信号线判定（先 4h 层面） ----
     is_signal2 = chg_4h >= SIGNAL_4H_MIN and drawdown > -DRAWDOWN_MAX
-    is_aux3 = AUX_4H_MIN <= chg_4h <= AUX_4H_MAX and vol_x >= AUX_VOL_X
+    is_aux3 = (AUX_4H_MIN <= chg_4h <= AUX_4H_MAX
+               and vol_x >= AUX_VOL_X
+               and oi_x >= FAKE_LAUNCH_OI_MIN)  # v1.2：埋伏必须 OI 同步放大，滤掉放量下跌噪音
 
     # ---- 通知线①：仅当 4h 层面无信号时才拉 5m 检查（节省 API 请求） ----
     chg_5m = 0.0
@@ -215,7 +218,8 @@ def evaluate_symbol(base: str, futures_map: Dict[str, str]) -> Dict[str, Any]:
         k5 = _fetch_klines(fsym, "5m", 60)
         if k5 and len(k5) >= 2:
             chg_5m = (k5[-1]["close"] / k5[-2]["close"] - 1) * 100
-            hit5 = chg_5m >= SIGNAL_5M_MIN
+            # v1.2：5m 涨幅达标且距 4h 本波高点回撤 > -3%（避免冲高回落追高）
+            hit5 = chg_5m >= SIGNAL_5M_MIN and drawdown > SIGNAL_5M_DD_MAX
     is_signal1 = hit5
 
     metrics = {
@@ -235,7 +239,8 @@ def evaluate_symbol(base: str, futures_map: Dict[str, str]) -> Dict[str, Any]:
     if fr is not None and (fr > VETO_FUNDING_HIGH or fr < VETO_FUNDING_LOW):
         funding_veto = True
     oi_veto = False
-    if oi_dd is not None and oi_dd < -VETO_OI_DRAWDOWN:
+    # v1.2：OI 回落>30% 在「辅助线③」上暂缓（回测显示 OI 回落后仍常续涨），仅对主信号②/通知线①生效
+    if oi_dd is not None and oi_dd < -VETO_OI_DRAWDOWN and (is_signal2 or is_signal1):
         oi_veto = True
     vetoed = funding_veto or oi_veto
 
@@ -253,7 +258,7 @@ def evaluate_symbol(base: str, futures_map: Dict[str, str]) -> Dict[str, Any]:
             action = "watch"
             veto_reasons = []
             if funding_veto:
-                veto_reasons.append(f"资金费率 {fr:+.4f}% 超出 [-0.1%, +0.3%]")
+                veto_reasons.append(f"资金费率 {fr:+.4f}% 超出 [-1.0%, +0.3%]")
             if oi_veto:
                 veto_reasons.append(f"OI 较峰值回落 {oi_dd:.1f}% (>30%)")
             reasons.append("⛔ 一票否决：" + "；".join(veto_reasons))
@@ -266,7 +271,7 @@ def evaluate_symbol(base: str, futures_map: Dict[str, str]) -> Dict[str, Any]:
         elif is_signal2:
             signal = "signal2"
             reasons.append(
-                f"主信号②：4h 涨幅 {chg_4h:+.1f}% (≥30%)，"
+                f"主信号②：4h 涨幅 {chg_4h:+.1f}% (≥15%)，"
                 f"距本波高点回撤 {drawdown:+.1f}% (<20%)"
             )
             if oi_x >= FAKE_LAUNCH_OI_MIN:
@@ -281,13 +286,16 @@ def evaluate_symbol(base: str, futures_map: Dict[str, str]) -> Dict[str, Any]:
             signal = "aux3"
             action = "observe"
             reasons.append(
-                f"辅助线③：4h 涨幅 {chg_4h:+.1f}% (3~10%) "
-                f"且 4h 量能 {vol_x:.1f}x (≥5x)，提前埋伏观察"
+                f"辅助线③：4h 涨幅 {chg_4h:+.1f}% (2~8%) "
+                f"且 4h 量能 {vol_x:.1f}x (≥3x)、OI 放大 {oi_x:.2f}x (≥1.15x)，提前埋伏观察"
             )
         else:  # is_signal1
             signal = "signal1"
             action = "watch"
-            reasons.append(f"通知线①：5m 涨幅 {chg_5m:+.1f}% (≥10%)，立即关注")
+            reasons.append(
+                f"通知线①：5m 涨幅 {chg_5m:+.1f}% (≥6%)，"
+                f"距 4h 本波高点回撤 {drawdown:+.1f}% (>-3%)，立即关注"
+            )
             confirms = []
             if vol_x >= CONFIRM_VOL_X:
                 confirms.append(f"量能 {vol_x:.1f}x")
@@ -347,7 +355,7 @@ def load_pool(path: str, top: int = 100) -> List[Dict[str, Any]]:
 
 
 def main(argv: Optional[List[str]] = None) -> int:
-    ap = argparse.ArgumentParser(description="v1.1 选币标准实时信号监视器")
+    ap = argparse.ArgumentParser(description="v1.2 选币标准实时信号监视器")
     ap.add_argument("--list", default=os.path.join(
         os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
         "data", "smallcap_top100_fdv.json"),
@@ -390,7 +398,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(json.dumps(hits, ensure_ascii=False, indent=2))
         return 0
 
-    print("\n== v1.1 实时信号扫描结果 ==")
+    print("\n== v1.2 实时信号扫描结果 ==")
     print(f"命中 {len(hits)} 个 / 扫描 {len(results)} 个")
     for r in hits:
         m = r.get("metrics", {})

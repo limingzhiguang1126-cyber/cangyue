@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-"""v1 选币标准历史回测器（Launch Signal Backtest）。
+"""v1.2 选币标准历史回测器（Launch Signal Backtest）。
 
-用途：验证 2026-08-07 讨论定稿的 v1 选币标准在历史数据上的有效性。
+用途：验证 2026-08-08 定稿的 v1.2 选币标准在历史数据上的有效性。
 回测对象 = 涨幅榜妖币（正样本）+ 追高失败币（负样本）。
 
-## v1 标准（讨论稿）
+## v1.2 标准（v1.1 + 用户确认的调整，2026-08-08）
 
 | 线 | 触发条件 | 动作 |
 |---|---|---|
-| 🔔 通知线① | 5m 涨幅 ≥ +10%（收盘口径） | 通知 + 进观察池 |
-| 🔔 主信号② | 4h 涨幅 ≥ +30% 且距本波高点回撤 < 20% | 通知 + 重点分析 |
-| 📡 辅助线③ | 4h 涨幅 3%~10% 且 4h 量能 ≥ 5x | 提前埋伏观察 |
-| ⛔ 一票否决 | 费率 > +0.15% 或 < -0.1% / OI 较峰值回落 > 30% | 不碰 |
+| 🔔 通知线① | 5m 涨幅 ≥ +6%（收盘口径）且距 4h 本波高点回撤 > -3% | 通知 + 进观察池 |
+| 🔔 主信号② | 4h 涨幅 ≥ +15% 且距本波高点回撤 < 20% | 通知 + 重点分析 |
+| 📡 辅助线③ | 4h 涨幅 2%~8% 且 4h 量能 ≥ 3x、OI 放大≥1.15x | 提前埋伏观察 |
+| ⛔ 一票否决 | 费率 > +0.3% 或 < -1.0% / OI 较峰值回落 > 30%（辅助线③暂缓） | 不碰 |
 
 ## 回测方法
 
@@ -62,24 +62,26 @@ PROXY_CORS_SH = "https://proxy.cors.sh/"
 _HEADERS = {"User-Agent": "Mozilla/5.0", "Origin": "https://cnb.cool"}
 
 # ---------------------------------------------------------------------------
-# v1 标准阈值（与讨论稿一致）
+# v1.2 标准阈值（与 v11_signal_watcher 保持一致）
 # ---------------------------------------------------------------------------
-# 通知线①：5m 涨幅门槛
-SIGNAL_5M_MIN = 10.0          # 5m 收盘涨幅 ≥ +10%
+# 通知线①：5m 涨幅门槛 + 距 4h 高点回撤过滤
+SIGNAL_5M_MIN = 6.0          # 5m 收盘涨幅 ≥ +6%
+SIGNAL_5M_DD_MAX = -3.0      # 距 4h 本波高点回撤 > -3% 才有效
 
 # 主信号②：4h 涨幅门槛 + 距高点回撤上限
-SIGNAL_4H_MIN = 30.0          # 4h 涨幅 ≥ +30%
-DRAWDOWN_MAX = 20.0           # 距本波高点回撤 < 20%（即回撤 < -20% 不触发）
+SIGNAL_4H_MIN = 15.0         # 4h 涨幅 ≥ +15%
+DRAWDOWN_MAX = 20.0          # 距本波高点回撤 < 20%（即回撤 < -20% 不触发）
 
 # 辅助线③：4h 温和放量
-AUX_4H_MIN = 3.0              # 4h 涨幅 ≥ +3%
-AUX_4H_MAX = 10.0             # 4h 涨幅 ≤ +10%
-AUX_VOL_X = 5.0               # 4h 量能 ≥ 前 24h 均量 5x
+AUX_4H_MIN = 2.0             # 4h 涨幅 ≥ +2%
+AUX_4H_MAX = 8.0             # 4h 涨幅 ≤ +8%
+AUX_VOL_X = 3.0              # 4h 量能 ≥ 前 24h 均量 3x
+AUX_OI_X_MIN = 1.15          # 4h OI 放大 ≥ 1.15x（滤掉放量下跌噪音）
 
 # 一票否决：资金费率 / OI 回撤
-VETO_FUNDING_HIGH = 0.15      # 费率 > +0.15%
-VETO_FUNDING_LOW = -0.10      # 费率 < -0.10%
-VETO_OI_DRAWDOWN = 30.0       # OI 较峰值回落 > 30%
+VETO_FUNDING_HIGH = 0.30     # 费率 > +0.3%
+VETO_FUNDING_LOW = -1.00     # 费率 < -1.0%（负费率放宽到 -1%）
+VETO_OI_DRAWDOWN = 30.0      # OI 较峰值回落 > 30%
 
 # 判定窗口（单位：根 4h bar）
 LOOKBACK_4H = 24              # 前 24 根（96h）为均量基准
@@ -230,7 +232,7 @@ def _classify_bar(
     funding: List[Dict[str, Any]],
     i: int,
 ) -> Tuple[str, Dict[str, Any]]:
-    """判定第 i 根 4h bar 是否触发 v1 标准的信号（不含 5m 通知线）。
+    """判定第 i 根 4h bar 是否触发 v1.2 标准的信号（不含 5m 通知线）。
 
     返回 (signal_key, detail)。signal_key ∈ {"signal2", "aux3", "veto", "none"}。
     若同时触发主信号②与一票否决，则返回 "veto"（一票否决优先）。
@@ -252,11 +254,18 @@ def _classify_bar(
     # 资金费率（一票否决依据）
     fr = _funding_at(funding, bar["ts"])
     # OI 较峰值回撤（一票否决依据）
-    oi_now = _oi_at(oi, bar["ts"])
+    oi_before = [o["oi_value"] for o in oi if o["time"] <= bar["ts"]]
+    oi_now = oi_before[-1] if oi_before else None
     oi_peak = _oi_peak_before(oi, bar["ts"], window=LOOKBACK_4H)
     oi_dd = None
     if oi_now is not None and oi_peak and oi_peak > 0:
         oi_dd = (oi_now / oi_peak - 1) * 100
+    # OI 放大倍数（持仓进场信号）：当前 vs 早期 10 条均值
+    oi_x = 0.0
+    if len(oi_before) >= 12:
+        early = _mean(oi_before[:10])
+        if early > 0 and oi_now is not None:
+            oi_x = oi_now / early
 
     detail = {
         "ts": _ts(bar["ts"]),
@@ -265,6 +274,7 @@ def _classify_bar(
         "vol_x": round(vol_x, 2),
         "funding_pct": round(fr, 4) if fr is not None else None,
         "oi_dd_pct": round(oi_dd, 2) if oi_dd is not None else None,
+        "oi_x": round(oi_x, 2),
     }
 
     # 一票否决条件（只对「本会触发」的信号生效）
@@ -275,12 +285,15 @@ def _classify_bar(
     if oi_dd is not None and oi_dd < -VETO_OI_DRAWDOWN:
         oi_veto = True
 
-    # 主信号②：4h 涨幅 ≥30% 且 距本波高点回撤 <20%
+    # 主信号②：4h 涨幅 ≥15% 且 距本波高点回撤 <20%
     is_signal2 = chg_4h >= SIGNAL_4H_MIN and drawdown > -DRAWDOWN_MAX
-    # 辅助线③：4h 涨 3~10% 且 量能 ≥5x
-    is_aux3 = AUX_4H_MIN <= chg_4h <= AUX_4H_MAX and vol_x >= AUX_VOL_X
+    # 辅助线③：4h 涨 2~8% 且 量能 ≥3x、OI 放大≥1.15x
+    is_aux3 = (AUX_4H_MIN <= chg_4h <= AUX_4H_MAX
+               and vol_x >= AUX_VOL_X
+               and oi_x >= AUX_OI_X_MIN)
 
-    if (is_signal2 or is_aux3) and (funding_veto or oi_veto):
+    # v1.2：OI 回落>30% 在「辅助线③」上暂缓（回测显示 OI 回落后仍常续涨）
+    if (is_signal2 or is_aux3) and (funding_veto or (oi_veto and is_signal2)):
         detail["veto"] = "funding" if funding_veto else "oi"
         detail["veto_signal"] = "signal2" if is_signal2 else "aux3"
         return "veto", detail
@@ -294,19 +307,43 @@ def _classify_bar(
     return "none", detail
 
 
-def _classify_5m(sym_5m: List[Dict[str, Any]], i: int) -> Tuple[bool, Dict[str, Any]]:
-    """判定 5m 通知线①：第 i 根 5m bar 收盘涨幅 ≥ +10%。"""
+def _drawdown_at(kl: List[Dict[str, Any]], ts: int) -> Optional[float]:
+    """在 ts 时刻所在 4h bar 上，计算「本波拉升高点」窗口内的回撤(%)。"""
+    idx = None
+    for k in kl:
+        if k["ts"] <= ts:
+            idx = k
+        else:
+            break
+    if idx is None:
+        return None
+    pos = kl.index(idx)
+    start = max(0, pos - LAUNCH_HIGH_WINDOW + 1)
+    window = kl[start:pos + 1]
+    peak = max(k["high"] for k in window)
+    cur = idx["close"]
+    if not peak:
+        return None
+    return (cur / peak - 1) * 100
+
+
+def _classify_5m(sym_5m: List[Dict[str, Any]], i: int, kl: Optional[List[Dict[str, Any]]] = None) -> Tuple[bool, Dict[str, Any]]:
+    """判定 5m 通知线①：第 i 根 5m bar 收盘涨幅 ≥ +6%，且距 4h 本波高点回撤 > -3%。"""
     if i < 1:
         return False, {}
     bar = sym_5m[i]
     prev = sym_5m[i - 1]
     chg = (bar["close"] - prev["close"]) / prev["close"] * 100 if prev["close"] else 0.0
-    if chg >= SIGNAL_5M_MIN:
-        return True, {
-            "ts": _ts(bar["ts"]),
-            "chg_5m": round(chg, 2),
-        }
-    return False, {}
+    if chg < SIGNAL_5M_MIN:
+        return False, {}
+    if kl is not None:
+        dd = _drawdown_at(kl, bar["ts"])
+        if dd is not None and dd <= SIGNAL_5M_DD_MAX:
+            return False, {}
+    return True, {
+        "ts": _ts(bar["ts"]),
+        "chg_5m": round(chg, 2),
+    }
 
 
 def backtest_symbol(symbol: str) -> Dict[str, Any]:
@@ -355,9 +392,9 @@ def backtest_symbol(symbol: str) -> Dict[str, Any]:
     # --- 5m 通知线①扫描 ---
     sig1: List[Dict[str, Any]] = []
     if k5 and len(k5) >= 300:
-        # 每根 5m bar 用收盘价判定涨幅≥10%（收盘口径），并直接基于 5m 序列算后续收益
+        # 每根 5m bar 用收盘价判定涨幅≥6%（收盘口径），并直接基于 5m 序列算后续收益
         for i in range(1, len(k5) - 288):  # 预留 24h 后续数据
-            hit, det = _classify_5m(k5, i)
+            hit, det = _classify_5m(k5, i, kl=kl)
             if hit:
                 det["fwd"] = _forward_returns_5m(k5, i)
                 sig1.append(det)
@@ -493,9 +530,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     print("v1 选币标准历史回测汇总")
     print("=" * 76)
     for name, key, k48, k24, kpeak in [
-            ("🔔 通知线① (5m≥10%，后续24h)", "signal1_5m", "f24h", "f6h", "peak24h"),
-            ("🔔 主信号② (4h≥30%+回撤<20%)", "signal2_main", "f48h", "f24h", "peak48h"),
-            ("📡 辅助线③ (4h涨3-10%+量能5x)", "aux3", "f48h", "f24h", "peak48h"),
+            ("🔔 通知线① (5m≥6%+距高点>-3%，后续24h)", "signal1_5m", "f24h", "f6h", "peak24h"),
+            ("🔔 主信号② (4h≥15%+回撤<20%)", "signal2_main", "f48h", "f24h", "peak48h"),
+            ("📡 辅助线③ (4h涨2-8%+量能3x+OI1.15x)", "aux3", "f48h", "f24h", "peak48h"),
             ("⛔ 一票否决(命中但被否决)", "veto", "f48h", "f24h", "peak48h"),
             ("⚪ 基线(全部bar随机买入)", "baseline", "f48h", "f24h", "peak48h")]:
         s = summary[key]

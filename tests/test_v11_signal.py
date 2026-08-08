@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """v11_signal_watcher / v11_message_formatter / v11_signal_daemon 单元测试。
 
-通过 mock 网络函数验证 v1.1 标准的判定逻辑（主信号②/辅助线③/通知线①/
+通过 mock 网络函数验证 v1.2 标准的判定逻辑（主信号②/辅助线③/通知线①/
 一票否决/假启动排除）以及消息格式化、守护进程去重。
 """
 
@@ -97,12 +97,12 @@ def _make_eval_env(kl, oi, funding, k5=None):
 
 
 # ---------------------------------------------------------------------------
-# 主信号②：4h≥30% + 回撤<20%
+# 主信号②：4h≥15% + 回撤<20%
 # ---------------------------------------------------------------------------
 def test_signal2_build_when_oi_follows():
     """主信号②触发 + OI 同步放大 → 可建仓。"""
-    # 前 24 根横盘（100 附近），最新一根 +35%，回撤小
-    chgs = [0.0] * 24 + [35.0]
+    # 前 24 根横盘（100 附近），最新一根 +16%，回撤小
+    chgs = [0.0] * 24 + [16.0]
     kl = _mk_4h_klines(chgs, [1000.0] * 24 + [50000.0])
     oi = _mk_oi([100.0] * 12 + [160.0] * 4)  # 放大 1.6x
     funding = _mk_funding([0.0001] * 10)
@@ -116,13 +116,13 @@ def test_signal2_build_when_oi_follows():
 
     assert res["signal"] == "signal2"
     assert res["action"] == "build"
-    assert res["metrics"]["chg_4h"] >= 30.0
+    assert res["metrics"]["chg_4h"] >= w.SIGNAL_4H_MIN
     assert any("可建仓" in r for r in res["reasons"])
 
 
 def test_signal2_watch_when_oi_not_following():
     """主信号②触发但 OI 未同步放大（<1.15x）→ 假启动排除，降级观察。"""
-    chgs = [0.0] * 24 + [35.0]
+    chgs = [0.0] * 24 + [16.0]
     kl = _mk_4h_klines(chgs, [1000.0] * 24 + [50000.0])
     oi = _mk_oi([100.0] * 12 + [105.0] * 4)  # 放大仅 1.05x
     funding = _mk_funding([0.0001] * 10)
@@ -140,7 +140,7 @@ def test_signal2_watch_when_oi_not_following():
 
 def test_signal2_veto_funding_high():
     """主信号② + 费率过热(>+0.3%) → 一票否决。"""
-    chgs = [0.0] * 24 + [35.0]
+    chgs = [0.0] * 24 + [16.0]
     kl = _mk_4h_klines(chgs, [1000.0] * 24 + [50000.0])
     oi = _mk_oi([100.0] * 12 + [160.0] * 4)
     funding = _mk_funding([0.0040] * 10)  # +0.4% > +0.3%
@@ -158,11 +158,11 @@ def test_signal2_veto_funding_high():
 
 
 def test_signal2_veto_funding_low():
-    """主信号② + 费率深负(< -0.1%) → 一票否决（负费率=出货信号）。"""
-    chgs = [0.0] * 24 + [35.0]
+    """主信号② + 费率深负(< -1%) → 一票否决（仅 -1% 以下才视为出货）。"""
+    chgs = [0.0] * 24 + [16.0]
     kl = _mk_4h_klines(chgs, [1000.0] * 24 + [50000.0])
     oi = _mk_oi([100.0] * 12 + [160.0] * 4)
-    funding = _mk_funding([-0.0020] * 10)  # -0.2% < -0.1%
+    funding = _mk_funding([-0.0020] * 10)  # -0.2%：仍在 [-1%, +0.3%] 内，不否决
 
     env = _make_eval_env(kl, oi, funding)
     try:
@@ -170,13 +170,24 @@ def test_signal2_veto_funding_low():
     finally:
         env.restore()
 
+    # v1.2：-0.2% 已放宽，不再一票否决
+    assert res["signal"] == "signal2"
+    assert res["vetoed"] is False
+
+    # 深度负费率 -1.2% 才否决
+    funding = _mk_funding([-0.0120] * 10)
+    env = _make_eval_env(kl, oi, funding)
+    try:
+        res = w.evaluate_symbol("BICO", _FUTURES_MAP)
+    finally:
+        env.restore()
     assert res["signal"] == "veto"
     assert res["vetoed"] is True
 
 
 def test_signal2_veto_oi_drawdown():
     """主信号② + OI 较峰值回落>30% → 一票否决。"""
-    chgs = [0.0] * 24 + [35.0]
+    chgs = [0.0] * 24 + [16.0]
     kl = _mk_4h_klines(chgs, [1000.0] * 24 + [50000.0])
     # OI 峰值 200，当前跌到 120（-40%）
     oi = [{"time": 1000 + i * 4 * 3600 * 1000, "oi_value": 200.0} for i in range(12)]
@@ -194,13 +205,13 @@ def test_signal2_veto_oi_drawdown():
 
 
 # ---------------------------------------------------------------------------
-# 辅助线③：4h 涨 3~10% + 量能 5x
+# 辅助线③：4h 涨 2~8% + 量能 3x + OI 放大 1.15x
 # ---------------------------------------------------------------------------
 def test_aux3_observe():
-    """辅助线③触发 → 埋伏观察。"""
-    chgs = [0.0] * 24 + [6.0]
+    """辅助线③触发（量能+OI 齐动）→ 埋伏观察。"""
+    chgs = [0.0] * 24 + [5.0]
     kl = _mk_4h_klines(chgs, [1000.0] * 24 + [8000.0])  # 8x 量
-    oi = _mk_oi([100.0] * 16)
+    oi = _mk_oi([100.0] * 12 + [130.0] * 4)  # OI 1.3x
     funding = _mk_funding([0.0001] * 10)
 
     env = _make_eval_env(kl, oi, funding)
@@ -215,8 +226,8 @@ def test_aux3_observe():
 
 
 def test_aux3_not_trigger_when_vol_low():
-    """4h 涨 6% 但量能不足 5x → 无信号。"""
-    chgs = [0.0] * 24 + [6.0]
+    """4h 涨 5% 但量能不足 3x → 无信号。"""
+    chgs = [0.0] * 24 + [5.0]
     kl = _mk_4h_klines(chgs, [1000.0] * 24 + [2000.0])  # 2x 量
     oi = _mk_oi([100.0] * 16)
     funding = _mk_funding([0.0001] * 10)
@@ -231,8 +242,45 @@ def test_aux3_not_trigger_when_vol_low():
     assert res["action"] == "none"
 
 
+def test_aux3_not_trigger_when_oi_not_following():
+    """4h 涨 5% + 量能 8x 但 OI 未放大（<1.15x）→ 无信号（放量下跌噪音滤除）。"""
+    chgs = [0.0] * 24 + [5.0]
+    kl = _mk_4h_klines(chgs, [1000.0] * 24 + [8000.0])
+    oi = _mk_oi([100.0] * 16)  # OI 1.0x，未放大
+    funding = _mk_funding([0.0001] * 10)
+
+    env = _make_eval_env(kl, oi, funding)
+    try:
+        res = w.evaluate_symbol("TUT", _FUTURES_MAP)
+    finally:
+        env.restore()
+
+    assert res["signal"] == "none"
+    assert res["action"] == "none"
+
+
+def test_aux3_veto_oi_drawdown_suspended():
+    """辅助线③ + OI 回落>30% → v1.2 暂缓 OI 否决，仍触发埋伏观察。"""
+    chgs = [0.0] * 24 + [5.0]
+    kl = _mk_4h_klines(chgs, [1000.0] * 24 + [8000.0])
+    # OI 峰值 200，当前 120（-40%），但早期均值低 → oi_x 仍可能 ≥1.15
+    oi = [{"time": 1000 + i * 4 * 3600 * 1000, "oi_value": 200.0} for i in range(12)]
+    oi += [{"time": 1000 + 12 * 4 * 3600 * 1000, "oi_value": 120.0}]
+    funding = _mk_funding([0.0001] * 10)
+
+    env = _make_eval_env(kl, oi, funding)
+    try:
+        res = w.evaluate_symbol("TUT", _FUTURES_MAP)
+    finally:
+        env.restore()
+
+    # 辅助线③ 不因 OI 回落被否决
+    assert res["vetoed"] is False
+    assert res["signal"] in ("aux3", "none")
+
+
 # ---------------------------------------------------------------------------
-# 通知线①：5m ≥10%
+# 通知线①：5m ≥6% 且距 4h 高点回撤 > -3%
 # ---------------------------------------------------------------------------
 def test_signal1_watch_without_confirm():
     """通知线①触发但确认条件不足 → 仅观察。"""
@@ -240,7 +288,7 @@ def test_signal1_watch_without_confirm():
     kl = _mk_4h_klines(chgs, [1000.0] * 25)
     oi = _mk_oi([100.0] * 16)
     funding = _mk_funding([0.0001] * 10)
-    k5 = _mk_5m_klines([0.0, 12.0])  # 5m +12% ≥ 10%
+    k5 = _mk_5m_klines([0.0, 8.0])  # 5m +8% ≥ 6%
 
     env = _make_eval_env(kl, oi, funding, k5)
     try:
@@ -255,12 +303,12 @@ def test_signal1_watch_without_confirm():
 
 def test_signal1_build_with_confirm():
     """通知线①触发 + 量能/OI/费率确认 → 可小仓。"""
-    chgs = [0.0] * 24 + [2.0]
+    chgs = [0.0] * 24 + [1.0]  # 4h +1%：低于辅助线③下限(2%)，仅剩 5m 通知线
     # 最新 bar 放量 5x，OI 放大 1.3x
     kl = _mk_4h_klines(chgs, [1000.0] * 24 + [5000.0])
     oi = _mk_oi([100.0] * 12 + [130.0] * 4)
     funding = _mk_funding([0.0001] * 10)
-    k5 = _mk_5m_klines([0.0, 12.0])
+    k5 = _mk_5m_klines([0.0, 8.0])
 
     env = _make_eval_env(kl, oi, funding, k5)
     try:
@@ -274,7 +322,7 @@ def test_signal1_build_with_confirm():
 
 
 def test_signal1_not_trigger_when_5m_low():
-    """5m 涨幅 <10% 且无其他信号 → none。"""
+    """5m 涨幅 <6% 且无其他信号 → none。"""
     chgs = [0.0] * 24 + [2.0]
     kl = _mk_4h_klines(chgs, [1000.0] * 25)
     oi = _mk_oi([100.0] * 16)
@@ -288,6 +336,37 @@ def test_signal1_not_trigger_when_5m_low():
         env.restore()
 
     assert res["signal"] == "none"
+
+
+def test_signal1_not_trigger_when_drawdown_deep():
+    """5m 涨 8% 但距 4h 高点回撤超过 3% → 冲高回落，不触发通知线①。"""
+    # 前一根 4h 拉高（高点 130），当前 4h 跌回 100（回撤 -23%），5m 从 100 拉 8%
+    base = [{"ts": 1000 + i * 4 * 3600 * 1000, "open": 100.0, "high": 100.0,
+             "low": 99.0, "close": 99.0, "vol_usd": 1000.0} for i in range(24)]
+    kl = base + [
+        {"ts": 1000 + 24 * 4 * 3600 * 1000, "open": 99.0, "high": 130.0,
+         "low": 98.0, "close": 100.0, "vol_usd": 5000.0},
+        {"ts": 1000 + 25 * 4 * 3600 * 1000, "open": 100.0, "high": 101.0,
+         "low": 99.0, "close": 100.0, "vol_usd": 3000.0},
+    ]
+    oi = _mk_oi([100.0] * 16)
+    funding = _mk_funding([0.0001] * 10)
+    # 5m 序列从 100 拉 +8%
+    k5 = [{"ts": 2000 + i * 5 * 60 * 1000, "open": 100.0, "high": 100.0,
+           "low": 99.0, "close": 100.0, "vol_usd": 1000.0} for i in range(30)]
+    k5[-1] = {"ts": 2000 + 29 * 5 * 60 * 1000, "open": 100.0, "high": 109.0,
+              "low": 99.0, "close": 108.0, "vol_usd": 2000.0}
+    k5[-2] = {"ts": 2000 + 28 * 5 * 60 * 1000, "open": 100.0, "high": 100.0,
+              "low": 99.0, "close": 100.0, "vol_usd": 1000.0}
+
+    env = _make_eval_env(kl, oi, funding, k5)
+    try:
+        res = w.evaluate_symbol("BICO", _FUTURES_MAP)
+    finally:
+        env.restore()
+
+    assert res["signal"] == "none"
+    assert res["action"] == "none"
 
 
 # ---------------------------------------------------------------------------

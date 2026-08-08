@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""v1.1 信号 → Telegram 消息格式化（纯函数，便于测试）。
+"""v1.2 信号 → Telegram 消息格式化（纯函数，便于测试）。
 
 把 v11_signal_watcher.evaluate_symbol 的输出格式化为一条
 适合 Telegram 推送的 HTML 消息，突出：命中原因 + 观察/建仓建议。
@@ -25,7 +25,7 @@ _ACTION_ICON = {
 
 
 def format_signal_message(result: Dict[str, Any], pool_rank: int = 0) -> str:
-    """把单条 v1.1 信号格式化为 Telegram HTML 消息。
+    """把单条 v1.2 信号格式化为 Telegram HTML 消息。
 
     Args:
         result: evaluate_symbol() 的输出。

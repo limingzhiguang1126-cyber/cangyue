@@ -1,7 +1,7 @@
-# 🏠 本地运行指南（v1.1 信号监控 + Telegram 推送）
+# 🏠 本地运行指南（v1.2 信号监控 + Telegram 推送）
 
-> 本文是「在你自己电脑/服务器上跑 v1.1 信号系统」的完整操作手册。
-> 目标是：**每 15 分钟扫一次 FDV Top100 候选池，命中 v1.1 标准就推送到你的 Telegram**。
+> 本文是「在你自己电脑/服务器上跑 v1.2 信号系统」的完整操作手册。
+> 目标是：**每 15 分钟扫一次 FDV Top100 候选池，命中 v1.2 标准就推送到你的 Telegram**。
 > 全程无需自己写代码，照着命令复制粘贴即可。
 
 ---
@@ -25,7 +25,7 @@
 cd ~/Desktop                       # 或任意目录
 git clone https://cnb.cool/qiang26/cangyue.git
 cd cangyue
-git checkout main                  # main 里已包含 v1.1 守护进程
+git checkout main                  # main 里已包含 v1.2 守护进程
 ls scripts/                        # 应能看到 tg_test_push.py / v11_cloud_run.py 等
 ```
 
@@ -74,7 +74,7 @@ python -m src.screener.v11_signal_daemon --once
 ```
 
 看到类似 `round done: scanned=100 hits=0 pushed=0 skipped=0` 就是跑通了：
-- `hits=0` 表示当前没有命中 v1.1 信号（正常，属于“等信号”状态，没命中就不推）
+- `hits=0` 表示当前没有命中 v1.2 信号（正常，属于“等信号”状态，没命中就不推）
 - 如果 `hits>0` 且你没开 dry-run，Telegram 会立刻收到推送
 
 > 💡 第一次跑会从币安 fapi 拉 K 线/OI/费率，可能遇到少量 429 限流告警，代码自带退避重试，耐心等几秒即可。
@@ -103,8 +103,8 @@ nohup python -m src.screener.v11_signal_daemon > v11.log 2>&1 &
 ```
 🚨 TST 🔵 埋伏观察
 📊 候选池排名：#7 | 合约：TSTUSDT
-📊 现价 0.01252 | 4h +9.1% | 量能 9.2x | OI 1.32x | 费率 +0.005%
-🎯 命中原因：辅助线③：4h 涨幅 +9.1% (3~10%) 且 4h 量能 9.2x (≥5x)
+📊 现价 0.01252 | 4h +5.1% | 量能 9.2x | OI 1.32x | 费率 +0.005%
+🎯 命中原因：辅助线③：4h 涨幅 +5.1% (2~8%) 且 4h 量能 9.2x (≥3x)、OI 放大 1.32x (≥1.15x)，提前埋伏观察
 💡 建议：埋伏观察：提前盯住，等 OI 跟进、量能持续再确认
 ```
 

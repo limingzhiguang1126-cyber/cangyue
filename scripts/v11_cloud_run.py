@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""v1.1 信号云端执行器（CNB 云原生构建 · 定时任务专用）。
+"""v1.2 信号云端执行器（CNB 云原生构建 · 定时任务专用）。
 
 在 CNB 云端流水线（crontab 定时触发）中运行：
   1. 跑一轮 v11_signal_watcher.scan_pool，命中信号推送 Telegram
@@ -167,7 +167,7 @@ def run_round(top: int, push_state_after: bool, workers: int,
 
 
 def main(argv: Optional[List[str]] = None) -> int:
-    ap = argparse.ArgumentParser(description="v1.1 信号云端执行器（CNB 定时任务）")
+    ap = argparse.ArgumentParser(description="v1.2 信号云端执行器（CNB 定时任务）")
     ap.add_argument("--top", type=int, default=100)
     ap.add_argument("--push-state", action="store_true", help="扫描后把去重状态推回仓库")
     ap.add_argument("--dry-run", action="store_true", help="只打印命中信号，不推送 Telegram（调试用，无需密钥）")

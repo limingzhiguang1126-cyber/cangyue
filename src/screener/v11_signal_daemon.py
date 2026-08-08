@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""v1.1 信号 · 每 15 分钟轮询 + Telegram 实时推送守护进程。
+"""v1.2 信号 · 每 15 分钟轮询 + Telegram 实时推送守护进程。
 
 在「线 1 候选池」（Top100 小市值）上每 15 分钟跑一次
 `v11_signal_watcher.scan_pool`，命中信号则格式化后推送到 Telegram。
@@ -177,7 +177,7 @@ def run_once(
 
 
 def main(argv: Optional[List[str]] = None) -> int:
-    ap = argparse.ArgumentParser(description="v1.1 信号每 15 分钟轮询 + Telegram 推送")
+    ap = argparse.ArgumentParser(description="v1.2 信号每 15 分钟轮询 + Telegram 推送")
     ap.add_argument("--pool", default=DEFAULT_POOL, help="线1候选池 JSON 路径")
     ap.add_argument("--top", type=int, default=100, help="取候选池前 N 个")
     ap.add_argument("--interval", type=int, default=15, help="轮询间隔（分钟），默认 15")

@@ -54,16 +54,32 @@ def test_classify_bar_signal2():
 
 
 def test_classify_bar_aux3():
-    # 构造 4h 涨幅 5% 且量能 6x 的 bar
+    # 构造 4h 涨幅 5% 且量能 6x、OI 放大 1.2x 的 bar
     base = [{"ts": i * 4 * 3600 * 1000, "open": 100.0, "high": 100.0,
              "low": 99.0, "close": 99.0, "vol_usd": 1000.0} for i in range(25)]
     kl = list(base)
     kl.append({"ts": 25 * 4 * 3600 * 1000, "open": 99.0, "high": 106.0,
                "low": 98.0, "close": 104.0, "vol_usd": 20000.0})  # +5%, 20x
-    oi = [{"time": k["ts"], "oi_value": 1000.0} for k in kl]
+    # OI：早期 100，近期放大到 120（1.2x ≥ 1.15x）
+    oi = [{"time": k["ts"], "oi_value": 100.0} for k in kl[:10]]
+    oi += [{"time": k["ts"], "oi_value": 120.0} for k in kl[10:]]
     funding = [{"time": kl[0]["ts"], "rate": 0.0001}]
     key, detail = _classify_bar(kl, oi, funding, len(kl) - 1)
     assert key == "aux3", f"got {key}"
+    assert detail["oi_x"] >= 1.15
+
+
+def test_classify_bar_aux3_requires_oi_follow():
+    # 4h 涨幅 5% + 量能 6x 但 OI 未放大（<1.15x）→ 不触发辅助线③
+    base = [{"ts": i * 4 * 3600 * 1000, "open": 100.0, "high": 100.0,
+             "low": 99.0, "close": 99.0, "vol_usd": 1000.0} for i in range(25)]
+    kl = list(base)
+    kl.append({"ts": 25 * 4 * 3600 * 1000, "open": 99.0, "high": 106.0,
+               "low": 98.0, "close": 104.0, "vol_usd": 20000.0})
+    oi = [{"time": k["ts"], "oi_value": 100.0} for k in kl]  # 恒定 1.0x
+    funding = [{"time": kl[0]["ts"], "rate": 0.0001}]
+    key, detail = _classify_bar(kl, oi, funding, len(kl) - 1)
+    assert key == "none", f"got {key}"
 
 
 def test_classify_bar_veto_funding():
@@ -74,7 +90,26 @@ def test_classify_bar_veto_funding():
     kl.append({"ts": 25 * 4 * 3600 * 1000, "open": 99.0, "high": 135.0,
                "low": 98.0, "close": 130.0, "vol_usd": 20000.0})
     oi = [{"time": k["ts"], "oi_value": 1000.0} for k in kl]
-    funding = [{"time": kl[0]["ts"], "rate": 0.0020}]  # +0.2% 过热
+    funding = [{"time": kl[0]["ts"], "rate": 0.0040}]  # +0.4% 过热（>0.3%）
+    key, detail = _classify_bar(kl, oi, funding, len(kl) - 1)
+    assert key == "veto", f"got {key}"
+    assert detail["veto"] == "funding"
+
+
+def test_classify_bar_veto_funding_low_relaxed():
+    # 负费率 -0.2%（旧版会否决，v1.2 已放宽到 -1%）→ 不否决，正常触发主信号②
+    base = [{"ts": i * 4 * 3600 * 1000, "open": 100.0, "high": 100.0,
+             "low": 99.0, "close": 99.0, "vol_usd": 1000.0} for i in range(25)]
+    kl = list(base)
+    kl.append({"ts": 25 * 4 * 3600 * 1000, "open": 99.0, "high": 135.0,
+               "low": 98.0, "close": 130.0, "vol_usd": 20000.0})
+    oi = [{"time": k["ts"], "oi_value": 1000.0} for k in kl]
+    funding = [{"time": kl[0]["ts"], "rate": -0.0020}]  # -0.2%
+    key, detail = _classify_bar(kl, oi, funding, len(kl) - 1)
+    assert key == "signal2", f"got {key}"
+
+    # 深度负费率 -1.2% → 一票否决
+    funding = [{"time": kl[0]["ts"], "rate": -0.0120}]
     key, detail = _classify_bar(kl, oi, funding, len(kl) - 1)
     assert key == "veto", f"got {key}"
     assert detail["veto"] == "funding"
