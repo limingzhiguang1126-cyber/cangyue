@@ -78,21 +78,47 @@ def refresh_pool() -> bool:
         return False
 
 
+def _gh_push_url() -> Optional[str]:
+    """GitHub Actions 环境下，生成带 GITHUB_TOKEN 的推送地址。
+
+    非 GitHub Actions 环境（或缺少 GITHUB_TOKEN）返回 None，由调用方
+    走 CNB 平台路径。
+    """
+    if os.getenv("GITHUB_ACTIONS") != "true":
+        return None
+    token = os.getenv("GITHUB_TOKEN", "")
+    repo = os.getenv("GITHUB_REPOSITORY", "")
+    if not token or not repo:
+        logger.info("GITHUB_TOKEN/GITHUB_REPOSITORY 缺失，跳过状态回推")
+        return None
+    return f"https://x-access-token:{token}@github.com/{repo}.git"
+
+
 def push_state(state_path: str) -> bool:
     """把去重状态文件推回仓库，供下次定时任务复用（持久化去重）。
+
+    支持两个运行平台：
+    - GitHub Actions：用 GITHUB_TOKEN 推回 GITHUB_REPOSITORY 的当前分支
+    - CNB 云原生构建：用 CNB_TOKEN 推回 CNB_REPO_SLUG 的 CNB_BRANCH 分支
 
     仅在「本轮确实推送过信号」时才有意义；回推失败只影响去重，
     不影响本轮推送结果（优雅降级）。
     """
-    token = os.getenv("CNB_TOKEN", "")
-    endpoint = os.getenv("CNB_WEB_ENDPOINT", "https://cnb.cool")
-    repo = os.getenv("CNB_REPO_SLUG", "")
-    branch = os.getenv("CNB_BRANCH", "main")
-    if not token or not repo:
-        logger.info("CNB_TOKEN/CNB_REPO_SLUG 缺失，跳过状态回推")
-        return False
-    try:
+    gh_url = _gh_push_url()
+    if gh_url:
+        push_url = gh_url
+        branch = os.getenv("GITHUB_REF_NAME", "main")
+        repo = os.getenv("GITHUB_REPOSITORY", "")
+    else:
+        token = os.getenv("CNB_TOKEN", "")
+        endpoint = os.getenv("CNB_WEB_ENDPOINT", "https://cnb.cool")
+        repo = os.getenv("CNB_REPO_SLUG", "")
+        branch = os.getenv("CNB_BRANCH", "main")
+        if not token or not repo:
+            logger.info("CNB_TOKEN/CNB_REPO_SLUG 缺失，跳过状态回推")
+            return False
         push_url = f"https://cnb:{token}@{endpoint.replace('https://', '')}/{repo}.git"
+    try:
         env = dict(os.environ)
         env["GIT_TERMINAL_PROMPT"] = "0"
         subprocess.run(["git", "remote", "set-url", "origin", push_url],

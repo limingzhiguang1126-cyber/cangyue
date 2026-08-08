@@ -1,0 +1,56 @@
+# ============================================================
+# GitHub Actions · 候选池每日刷新（FDV Top100）
+#
+# 每天 07:35 自动重新抓取币安数据，刷新 data/smallcap_top100_fdv.json
+# （v1.2 信号扫描用的候选池），有变化则自动提交回仓库。
+# 与 CNB 云原生定时任务（.cnb.yml 的 refresh-pool）逻辑一致。
+# ============================================================
+
+name: 刷新 FDV Top100 候选池
+
+on:
+  schedule:
+    - cron: "35 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-pool
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 安装 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 刷新候选池
+        run: |
+          python -m src.screener.binance_smallcap --top 100 --sort fdv \
+            --output data/smallcap_top100_fdv.json
+
+      - name: 提交变更（如有）
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/smallcap_top100_fdv.json
+          if git diff --cached --quiet; then
+            echo "候选池无变化，跳过提交"
+          else
+            git commit -m "chore(screener): 刷新 FDV Top100 候选池 [gh-actions]"
+            git push
+          fi
