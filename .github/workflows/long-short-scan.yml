@@ -1,0 +1,78 @@
+# ============================================================
+# GitHub Actions · 多空比/主动买卖拐点监控 + Telegram 推送
+#
+# 目的：在 FDV Top100 候选池上，每 5 分钟盯一次币安永续合约的
+#       主动买卖比（taker long/short ratio），命中「空翻多 / 暴跌
+#       风险」第一时间推送到 Telegram。
+#
+# 需要的仓库 Secrets（Settings → Secrets and variables → Actions）：
+#   TELEGRAM_BOT_TOKEN    @BotFather 创建 Bot 的 token（必填）
+#   TELEGRAM_CHAT_ID      你的用户 ID（@userinfobot 可查，必填）
+#
+# 可选：TELEGRAM_API_BASE  若 Telegram 直连失败，指向海外 Bot API 代理
+#
+# 去重状态 data/ls_signal_state.json 由本工作流自动提交回仓库，
+# 确保同标的同信号线 30 分钟内只推一次。
+# ============================================================
+
+name: 多空比拐点监控 + Telegram 推送
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+    inputs:
+      top:
+        description: "扫描候选池数量（默认 100）"
+        required: false
+        default: "100"
+      dry_run:
+        description: "只打印不推送（调试用，不需要 Telegram 密钥）"
+        required: false
+        default: "false"
+        type: boolean
+
+permissions:
+  contents: write   # 允许把去重状态文件推回仓库
+
+concurrency:
+  group: long-short-scan
+  cancel-in-progress: false   # 避免并发轮次互相覆盖去重状态
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 安装 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 手动触发时刷新候选池（可选）
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python -m src.screener.binance_smallcap --top 100 --sort fdv \
+            --output data/smallcap_top100_fdv.json
+
+      - name: 扫描多空比/主动买卖拐点并推送 Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_API_BASE: ${{ secrets.TELEGRAM_API_BASE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TOP="${{ github.event.inputs.top || '100' }}"
+          if [ "${{ github.event.inputs.dry_run || 'false' }}" = "true" ]; then
+            python scripts/ls_cloud_run.py --top "$TOP" --dry-run
+          else
+            python scripts/ls_cloud_run.py --top "$TOP" --push-state
+          fi
