@@ -136,6 +136,26 @@ python -m src.screener.v11_signal_daemon --interval 15
 
 **依赖环境变量**：`TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID`（见 `.env.example`）。
 
+### 6.1 多空比 + 主动买卖拐点监控（每 5 分钟）
+
+在 FDV 最小 Top100 候选池上，**每 5 分钟**盯一次币安永续合约的
+**主动买卖比（taker long/short ratio）**，出现「空翻多」和「暴跌风险」第一时间推送 Telegram：
+
+| 信号 | 触发条件 | 含义 |
+|---|---|---|
+| 🟢 空翻多 | 近 12 根均值 < 0.92（空头主导）→ 最新值突破 ≥ 1.0，且 15m 涨 ≥ +0.3% 确认 | 空头回补 / 主动性买盘进场，见底反弹迹象 |
+| ⚠️ 暴跌风险 | 15m 跌 ≤ -4%；或 多空比 ≤ 0.55 且连续 ≥2 根下降 + 较均值降幅 ≥ 0.25 | 空头主动砸盘 / 资金出逃，谨防急跌 |
+
+```bash
+# 单次扫描并推送（调试用）
+python scripts/ls_cloud_run.py --top 100
+
+# 只打印不推送（dry-run，不依赖 Telegram token）
+python scripts/ls_cloud_run.py --top 100 --dry-run
+```
+
+**去重机制**：同标的 + 同信号在 30 分钟内只推一次，状态持久化到 `data/ls_signal_state.json`。
+
 ## 🧪 运行测试
 
 ```bash
@@ -220,6 +240,7 @@ python scripts/v11_cloud_run.py --top 100 --dry-run
 |---|---|---|
 | `refresh-pool` | 每天 07:35 | 刷新 `data/smallcap_top100_fdv.json`（FDV 最小 Top100）并自动提交 |
 | `v11-signal-scan` | 每 15 分钟 | 扫描候选池，命中 v1.2 信号推送 Telegram，并把去重状态回推仓库 |
+| `long-short-sentinel` | **每 5 分钟** | 盯多空比 + 主动买卖拐点，命中「空翻多 / 暴跌风险」第一时间推送 Telegram，并把去重状态回推仓库 |
 
 ### 网页手动触发（Web Trigger）
 
@@ -228,6 +249,7 @@ python scripts/v11_cloud_run.py --top 100 --dry-run
 | 按钮 | 作用 | 可调参数 |
 |---|---|---|
 | **立即扫描信号** | 手动跑一轮 v1.2 信号扫描，命中即推送 Telegram（默认按钮） | ① 扫描数量：Top 20 / 50 / 100 / 200；② 只扫描不推送（dry-run 调试开关） |
+| **🧭 立即扫描多空比** | 手动跑一轮多空比/主动买卖拐点监控，命中「空翻多 / 暴跌风险」即推 Telegram（默认按钮） | ① 扫描数量：Top 20 / 50 / 100；② 只扫描不推送（dry-run 调试开关） |
 | **立即刷新候选池** | 重新抓取币安数据，刷新 FDV Top100 候选池并自动提交 | — |
 | **📨 发送测试消息** | 向你的 Telegram 发一条测试消息，验证推送链路是否打通（同时诊断云端能否访问 api.telegram.org） | — |
 

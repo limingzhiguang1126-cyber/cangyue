@@ -53,6 +53,21 @@ main:
           script: |
             python scripts/v11_cloud_run.py --top 100 --push-state
 
+  # ---- 每 5 分钟盯多空比 / 主动买卖拐点（空翻多 + 暴跌风险）----
+  # 用户 2026 要求：持续盯多空比和主动买卖拐点，出现"空翻多"和暴跌风险第一时间提醒
+  "crontab: */5 * * * *":
+    - name: long-short-sentinel
+      docker:
+        image: python:3.11-slim
+      imports:
+        - https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml
+      stages:
+        - name: install-deps
+          script: pip install -q -r requirements.txt
+        - name: scan-and-push
+          script: |
+            python scripts/ls_cloud_run.py --top 100 --push-state
+
 # ============================================================
 # 网页手动触发（Web Trigger）—— 由 .cnb/web_trigger.yml 的按钮唤起
 #   · 手动信号扫描：点击「立即扫描信号」→ 立即跑一轮 v1.1 信号扫描并推送
@@ -118,6 +133,26 @@ $:
           script: |
             echo "[web_trigger] Telegram 推送链路测试"
             python scripts/tg_test_push_cloud.py
+
+  web_trigger_scan_ls:
+    - name: manual-scan-ls
+      docker:
+        image: python:3.11-slim
+      imports:
+        - https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml
+      stages:
+        - name: install-deps
+          script: pip install -q -r requirements.txt
+        - name: scan-and-push
+          script: |
+            set -e
+            TOP="${top:-100}"
+            echo "[web_trigger] manual long/short scan: top=${TOP} dry_run=${dry_run:-false}"
+            if [ "${dry_run:-false}" = "true" ]; then
+              python scripts/ls_cloud_run.py --top "$TOP" --dry-run
+            else
+              python scripts/ls_cloud_run.py --top "$TOP" --push-state
+            fi
 
   web_trigger_deploy_hf:
     - name: deploy-hf-space
