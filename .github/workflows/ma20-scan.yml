@@ -1,0 +1,72 @@
+# ============================================================
+# GitHub Actions · 币安合约成交额 Top50 · 回踩 MA20 监控 + Telegram 推送
+#
+# 目的：扫描币安 USDT 永续合约 24h 成交额 Top50，检查这些币在
+#       15m / 1h / 4h 三个级别是否「回踩 MA20」（价格从上方回调贴近
+#       MA20 但仍位于均线上方），命中则推送到 Telegram。
+#
+# 需要的仓库 Secrets（Settings → Secrets and variables → Actions）：
+#   TELEGRAM_BOT_TOKEN    @BotFather 创建 Bot 的 token（必填）
+#   TELEGRAM_CHAT_ID      你的用户 ID（@userinfobot 可查，必填）
+#
+# 可选：TELEGRAM_API_BASE  若 Telegram 直连失败，指向海外 Bot API 代理
+#
+# 去重状态 data/ma20_signal_state.json 由本工作流自动提交回仓库，
+# 确保同标的同级别组合 2 小时内只推一次。
+# ============================================================
+
+name: 币安成交额Top50 回踩MA20 监控 + Telegram 推送
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      top:
+        description: "扫描成交额 TopN 合约（默认 50）"
+        required: false
+        default: "50"
+      dry_run:
+        description: "只打印不推送（调试用，不需要 Telegram 密钥）"
+        required: false
+        default: "false"
+        type: boolean
+
+permissions:
+  contents: write   # 允许把去重状态文件推回仓库
+
+concurrency:
+  group: ma20-scan
+  cancel-in-progress: false   # 避免并发轮次互相覆盖去重状态
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 安装 Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 扫描成交额Top50 回踩MA20 并推送 Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_API_BASE: ${{ secrets.TELEGRAM_API_BASE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TOP="${{ github.event.inputs.top || '50' }}"
+          if [ "${{ github.event.inputs.dry_run || 'false' }}" = "true" ]; then
+            python scripts/ma20_cloud_run.py --top "$TOP" --dry-run
+          else
+            python scripts/ma20_cloud_run.py --top "$TOP" --push-state
+          fi
