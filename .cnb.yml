@@ -53,6 +53,19 @@ main:
           script: |
             python scripts/v11_cloud_run.py --top 100 --push-state
 
+    # 币安合约成交额 Top50 回踩 MA20（15m/1h/4h 三级别）
+    - name: ma20-pullback-scan
+      docker:
+        image: python:3.11-slim
+      imports:
+        - https://cnb.cool/qiang26/cangyue-secrets/-/blob/main/telegram.yml
+      stages:
+        - name: install-deps
+          script: pip install -q -r requirements.txt
+        - name: scan-and-push
+          script: |
+            python scripts/ma20_cloud_run.py --top 50 --push-state
+
   # ---- 每 5 分钟盯多空比 / 主动买卖拐点（空翻多 + 暴跌风险）----
   # 用户 2026 要求：持续盯多空比和主动买卖拐点，出现"空翻多"和暴跌风险第一时间提醒
   "crontab: */5 * * * *":

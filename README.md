@@ -198,11 +198,13 @@ python -m pytest tests/ -v
 
 ### 路线 A：GitHub Actions（推荐）
 
-已内置两个工作流（`.github/workflows/`），代码推到 GitHub 后自动生效：
+已内置多个工作流（`.github/workflows/`），代码推到 GitHub 后自动生效：
 
 | 工作流 | 频率 | 说明 |
 |---|---|---|
 | `signal-scan.yml` | 每 15 分钟 | 扫描 FDV Top100 候选池，命中 v1.2 信号推送 Telegram，并把去重状态回推仓库 |
+| `long-short-scan.yml` | 每 5 分钟 | 盯多空比/主动买卖拐点，命中「空翻多 / 暴跌风险」推送 Telegram，并把去重状态回推仓库 |
+| `ma20-scan.yml` | 每 15 分钟 | 扫描币安合约成交额 Top50，命中「回踩 MA20」（15m/1h/4h 三级别）推送 Telegram，并把去重状态回推仓库 |
 | `refresh-pool.yml` | 每天 07:35 | 刷新 `data/smallcap_top100_fdv.json` 并自动提交 |
 
 **启用步骤（约 5 分钟）**：
